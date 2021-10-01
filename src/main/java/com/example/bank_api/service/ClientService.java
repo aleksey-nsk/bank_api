@@ -1,18 +1,18 @@
 package com.example.bank_api.service;
 
-import com.example.bank_api.entity.Client;
+import com.example.bank_api.dto.ClientDto;
 
 import java.util.List;
 
 public interface ClientService {
 
-    List<Client> findAll();
+    List<ClientDto> findAll();
 
-    Client findById(Long id);
+    ClientDto findById(Long id);
 
-    Client save(Client client);
+    ClientDto save(ClientDto clientDto);
 
-    Client update(Long id, Client newClient);
+    ClientDto update(Long id, ClientDto clientDto);
 
     void delete(Long id);
 }

@@ -1,6 +1,6 @@
 package com.example.bank_api.controller;
 
-import com.example.bank_api.entity.Client;
+import com.example.bank_api.dto.ClientDto;
 import com.example.bank_api.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,38 +18,38 @@ public class ClientController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Client> findAll() {
+    public List<ClientDto> findAll() {
         return clientService.findAll();
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Client findById(@PathVariable("id") Long id) {
-        Client client = clientService.findById(id);
-        if (client == null) {
+    public ClientDto findById(@PathVariable("id") Long id) {
+        ClientDto clientDto = clientService.findById(id);
+        if (clientDto == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return client;
+        return clientDto;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Client save(@RequestBody Client client) {
-        Client saved = clientService.save(client);
+    public ClientDto save(@RequestBody ClientDto clientDto) {
+        ClientDto saved = clientService.save(clientDto);
         if (saved == null) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        return client;
+        return saved;
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Client update(@PathVariable("id") Long id, @RequestBody Client newClient) {
-        Client updatedClient = clientService.update(id, newClient);
-        if (updatedClient == null) {
+    public ClientDto update(@PathVariable("id") Long id, @RequestBody ClientDto clientDto) {
+        ClientDto updated = clientService.update(id, clientDto);
+        if (updated == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return updatedClient;
+        return updated;
     }
 
     @DeleteMapping("/{id}")

@@ -1,5 +1,6 @@
 package com.example.bank_api.service.impl;
 
+import com.example.bank_api.dto.ClientDto;
 import com.example.bank_api.entity.Client;
 import com.example.bank_api.repository.ClientRepository;
 import com.example.bank_api.service.ClientService;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -19,35 +21,40 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
-    public List<Client> findAll() {
-        List<Client> clientList = clientRepository.findAll();
-        log.debug("Список всех клиентов: " + clientList);
-        return clientList;
+    public List<ClientDto> findAll() {
+        List<ClientDto> list = clientRepository.findAll()
+                .stream()
+                .map(it -> ClientDto.valueOf(it))
+                .collect(Collectors.toList());
+
+        log.debug("Список всех клиентов: " + list);
+        return list;
     }
 
     @Override
-    public Client findById(Long id) {
-        Client client = null;
+    public ClientDto findById(Long id) {
+        ClientDto clientDto = null;
 
         Optional<Client> optionalClient = clientRepository.findById(id);
         if (optionalClient.isPresent()) {
-            client = optionalClient.get();
+            clientDto = ClientDto.valueOf(optionalClient.get());
         }
 
-        log.debug("По id=" + id + " получен клиент: " + client);
-        return client;
+        log.debug("По id=" + id + " получен клиент: " + clientDto);
+        return clientDto;
     }
 
     @Override
-    public Client save(Client client) {
-        String last = client.getLastname();
-        String first = client.getFirstname();
-        String mid = client.getMiddlename();
+    public ClientDto save(ClientDto clientDto) {
+        String last = clientDto.getLastname();
+        String first = clientDto.getFirstname();
+        String mid = clientDto.getMiddlename();
 
-        Client saved = null;
+        Client client = clientDto.mapToClient();
+        ClientDto saved = null;
 
         if (clientRepository.findByLastnameAndFirstnameAndMiddlename(last, first, mid) == null) {
-            saved = clientRepository.save(client);
+            saved = ClientDto.valueOf(clientRepository.save(client));
             log.debug("В БД сохранён клиент: " + saved);
         } else {
             String fullName = String.format("%s %s %s", last, first, mid);
@@ -58,26 +65,27 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client update(Long id, Client newClient) {
-        Client updatedClient = null;
+    public ClientDto update(Long id, ClientDto clientDto) {
+        Client client = clientDto.mapToClient();
+        ClientDto updated = null;
 
-        Optional<Client> oldClient = clientRepository.findById(id);
-        if (oldClient.isPresent()) {
-            log.debug("Текущий клиент: " + oldClient.get());
+        Optional<Client> currentClient = clientRepository.findById(id);
+        if (currentClient.isPresent()) {
+            log.debug("Текущий клиент: " + currentClient.get());
 
             // Во время обновления изменять ФИО и возраст.
             // При этом id и счета брать текущие
-            newClient.setId(oldClient.get().getId());
-            newClient.setAccounts(oldClient.get().getAccounts());
-            log.debug("Новый клиент: " + newClient);
+            client.setId(currentClient.get().getId());
+            client.setAccounts(currentClient.get().getAccounts());
+            log.debug("Данные клиента для обновления: " + client);
 
-            updatedClient = clientRepository.save(newClient);
-            log.debug("Обновлённый клиент: " + updatedClient);
+            updated = ClientDto.valueOf(clientRepository.save(client));
+            log.debug("Обновлённый клиент: " + updated);
         } else {
             log.debug("В БД отсутствует клиент с id=" + id);
         }
 
-        return updatedClient;
+        return updated;
     }
 
     @Override
