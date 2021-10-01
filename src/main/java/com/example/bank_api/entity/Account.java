@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,9 @@ public class Account {
     @Column(name = "opening_date")
     private Date openingDate;
 
+    @Column(name = "money")
+    private BigDecimal money;
+
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Card> cards;
 
@@ -35,12 +39,24 @@ public class Account {
         return client;
     }
 
+    public Account() {
+    }
+
+    public Account(Long id, String number, Date openingDate, BigDecimal money, List<Card> cards) {
+        this.id = id;
+        this.number = number;
+        this.openingDate = openingDate;
+        this.money = money;
+        this.cards = cards;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
                 "id=" + id +
                 ", number='" + number + '\'' +
                 ", openingDate=" + openingDate +
+                ", money=" + money +
                 ", cards=" + cards +
                 '}';
     }

@@ -12,6 +12,7 @@ CREATE TABLE accounts
     id           bigserial PRIMARY KEY,
     number       varchar,
     opening_date date,
+    money        numeric,
     client_id    bigint,
     FOREIGN KEY (client_id) REFERENCES clients (id)
 );
@@ -28,9 +29,9 @@ CREATE TABLE cards
 INSERT INTO clients(lastname, firstname, middlename, age)
 VALUES ('Иванов', 'Иван', 'Иванович', 34);
 
-INSERT INTO accounts(number, opening_date, client_id)
-VALUES ('11111222223333344444', '2017-01-14', (SELECT id FROM clients WHERE lastname = 'Иванов')),
-       ('55555666667777788888', '2018-02-15', (SELECT id FROM clients WHERE lastname = 'Иванов'));
+INSERT INTO accounts(number, opening_date, money, client_id)
+VALUES ('11111222223333344444', '2017-01-14', 100, (SELECT id FROM clients WHERE lastname = 'Иванов')),
+       ('55555666667777788888', '2018-02-15', 500, (SELECT id FROM clients WHERE lastname = 'Иванов'));
 
 INSERT INTO cards(number, release_date, account_id)
 VALUES ('0000001111122222', '2019-09-15', (SELECT id FROM accounts WHERE accounts.number = '11111222223333344444')),

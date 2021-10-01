@@ -1,10 +1,10 @@
 package com.example.bank_api.service;
 
-import com.example.bank_api.entity.Account;
+import com.example.bank_api.dto.AccountDto;
 
 import java.util.List;
 
 public interface AccountService {
 
-    List<Account> findAll();
+    List<AccountDto> findAll(Long clientId);
 }
