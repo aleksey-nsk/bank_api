@@ -73,6 +73,8 @@ public class ClientServiceImpl implements ClientService {
 
             updatedClient = clientRepository.save(newClient);
             log.debug("Обновлённый клиент: " + updatedClient);
+        } else {
+            log.debug("В БД отсутствует клиент с id=" + id);
         }
 
         return updatedClient;
