@@ -10,13 +10,13 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/client")
+@RequestMapping("/api/v1/client/{client_id}/account")
 public class AccountController {
 
     @Autowired
     private AccountService accountService;
 
-    @GetMapping("/{client_id}/account")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<AccountDto> findAll(@PathVariable("client_id") Long clientId) {
         List<AccountDto> accountDtoList = accountService.findAll(clientId);
@@ -26,7 +26,7 @@ public class AccountController {
         return accountDtoList;
     }
 
-    @PutMapping("/{client_id}/account/{account_id}")
+    @PutMapping("/{account_id}")
     @ResponseStatus(HttpStatus.OK)
     public void update(
             @PathVariable("client_id") Long clientId,

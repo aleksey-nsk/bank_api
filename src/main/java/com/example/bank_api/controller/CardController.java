@@ -10,13 +10,13 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/client")
+@RequestMapping("/api/v1/client/{client_id}/account/{account_id}/card")
 public class CardController {
 
     @Autowired
     private CardService cardService;
 
-    @GetMapping("/{client_id}/account/{account_id}/card")
+    @GetMapping
     public List<CardDto> findAll(
             @PathVariable("client_id") Long clientId,
             @PathVariable("account_id") Long accountId) {
@@ -27,7 +27,7 @@ public class CardController {
         return cardDtoList;
     }
 
-    @PostMapping("/{client_id}/account/{account_id}/card")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CardDto save(
             @PathVariable("client_id") Long clientId,
