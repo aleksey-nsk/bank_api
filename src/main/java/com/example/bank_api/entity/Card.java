@@ -29,11 +29,10 @@ public class Card {
     public Card() {
     }
 
-    public Card(Long id, String number, Date releaseDate, Account account) {
+    public Card(Long id, String number, Date releaseDate) {
         this.id = id;
         this.number = number;
         this.releaseDate = releaseDate;
-        this.account = account;
     }
 
     @JsonIgnore

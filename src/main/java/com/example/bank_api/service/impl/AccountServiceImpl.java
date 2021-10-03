@@ -42,6 +42,24 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public AccountDto findById(Long clientId, Long accountId) {
+        log.debug("");
+        log.debug("Поиск счёта по идентификаторам");
+        log.debug("clientId: " + clientId);
+        log.debug("accountId: " + accountId);
+
+        AccountDto accountDto = null;
+
+        Account account = accountRepository.findAccountByIdAndClient_Id(accountId, clientId);
+        if (account != null) {
+            accountDto = AccountDto.valueOf(account);
+        }
+
+        log.debug("accountDto: " + accountDto);
+        return accountDto;
+    }
+
+    @Override
     @Transactional
     public boolean update(Long clientId, Long accountId, AccountDto accountDto) {
         Account account = accountDto.mapToAccount();

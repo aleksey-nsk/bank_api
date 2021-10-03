@@ -34,11 +34,6 @@ public class Account {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @JsonIgnore
-    public Client getClient() {
-        return client;
-    }
-
     public Account() {
     }
 
@@ -48,6 +43,11 @@ public class Account {
         this.openingDate = openingDate;
         this.money = money;
         this.cards = cards;
+    }
+
+    @JsonIgnore
+    public Client getClient() {
+        return client;
     }
 
     @Override
