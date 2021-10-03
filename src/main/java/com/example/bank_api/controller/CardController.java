@@ -4,10 +4,7 @@ import com.example.bank_api.dto.CardDto;
 import com.example.bank_api.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -28,5 +25,18 @@ public class CardController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return cardDtoList;
+    }
+
+    @PostMapping("/{client_id}/account/{account_id}/card")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CardDto save(
+            @PathVariable("client_id") Long clientId,
+            @PathVariable("account_id") Long accountId,
+            @RequestBody CardDto cardDto) {
+        CardDto saved = cardService.save(clientId, accountId, cardDto);
+        if (saved == null) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        return saved;
     }
 }

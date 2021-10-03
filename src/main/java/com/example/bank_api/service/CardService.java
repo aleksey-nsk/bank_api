@@ -7,4 +7,6 @@ import java.util.List;
 public interface CardService {
 
     List<CardDto> findAll(Long clientId, Long accountId);
+
+    CardDto save(Long clientId, Long accountId, CardDto cardDto);
 }
