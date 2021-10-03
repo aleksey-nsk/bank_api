@@ -73,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
             BigDecimal money = account.getMoney();
             log.debug("Данные счёта для обновления: money: " + money);
 
-            accountRepository.updateMoney(accountId, money);
+            accountRepository.updateAccountSetMoney(accountId, money);
             updated = true;
         } else {
             log.debug("В БД отсутствует счёт с clientId=" + clientId + " и accountId=" + accountId);
