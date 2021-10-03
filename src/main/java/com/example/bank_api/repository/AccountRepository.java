@@ -16,7 +16,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Account findAccountByIdAndClient_Id(Long accountId, Long clientId);
 
-    @Query("UPDATE Account SET money = :money WHERE id = :accountId")
+    @Query("UPDATE Account SET balance = :balance WHERE id = :accountId")
     @Modifying
-    void updateAccountSetMoney(Long accountId, BigDecimal money);
+    void updateAccountSetBalance(Long accountId, BigDecimal balance);
 }

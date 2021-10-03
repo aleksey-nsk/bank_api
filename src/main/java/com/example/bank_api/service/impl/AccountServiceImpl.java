@@ -3,7 +3,10 @@ package com.example.bank_api.service.impl;
 import com.example.bank_api.dto.AccountDto;
 import com.example.bank_api.dto.ClientDto;
 import com.example.bank_api.entity.Account;
+import com.example.bank_api.entity.Card;
+import com.example.bank_api.entity.Client;
 import com.example.bank_api.repository.AccountRepository;
+import com.example.bank_api.repository.CardRepository;
 import com.example.bank_api.service.AccountService;
 import com.example.bank_api.service.ClientService;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +24,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private CardRepository cardRepository;
 
     @Autowired
     private ClientService clientService;
@@ -60,6 +66,34 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public AccountDto findAccountByCardNumber(Long clientId, String cardNumber) {
+        log.debug("");
+        log.debug("Поиск счёта по номеру карты");
+        log.debug("clientId: " + clientId);
+        log.debug("cardNumber: " + cardNumber);
+
+        AccountDto accountDto = null;
+
+        ClientDto clientDto = clientService.findById(clientId);
+        Card card = cardRepository.findCardByNumber(cardNumber);
+        log.debug("card: " + card);
+
+        if (clientDto != null && card != null) {
+            Account accountByCard = card.getAccount();
+            log.debug("accountByCard: " + accountByCard);
+
+            Client clientByAccount = accountByCard.getClient();
+            log.debug("clientByAccount: " + clientByAccount);
+
+            if (clientByAccount.getId().equals(clientId)) {
+                accountDto = AccountDto.valueOf(accountByCard);
+            }
+        }
+
+        return accountDto;
+    }
+
+    @Override
     @Transactional
     public boolean update(Long clientId, Long accountId, AccountDto accountDto) {
         Account account = accountDto.mapToAccount();
@@ -69,11 +103,11 @@ public class AccountServiceImpl implements AccountService {
         if (currentAccount != null) {
             log.debug("Текущий счёт: " + currentAccount);
 
-            // Во время обновления изменять только деньги на счету
-            BigDecimal money = account.getMoney();
-            log.debug("Данные счёта для обновления: money: " + money);
+            // Во время обновления изменять только баланс на счету
+            BigDecimal balance = account.getBalance();
+            log.debug("Обновить баланс на счёте: " + balance);
 
-            accountRepository.updateAccountSetMoney(accountId, money);
+            accountRepository.updateAccountSetBalance(accountId, balance);
             updated = true;
         } else {
             log.debug("В БД отсутствует счёт с clientId=" + clientId + " и accountId=" + accountId);

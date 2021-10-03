@@ -26,6 +26,19 @@ public class AccountController {
         return accountDtoList;
     }
 
+    @GetMapping("/card")
+    @ResponseStatus(HttpStatus.OK)
+    public AccountDto findAccountByCardNumber(
+            @PathVariable("client_id") Long clientId,
+            @RequestParam("number") String cardNumber
+    ) {
+        AccountDto accountDto = accountService.findAccountByCardNumber(clientId, cardNumber);
+        if (accountDto == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return accountDto;
+    }
+
     @PutMapping("/{account_id}")
     @ResponseStatus(HttpStatus.OK)
     public void update(

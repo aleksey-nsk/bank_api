@@ -15,14 +15,14 @@ public class AccountDto {
     private Long id;
     private String number;
     private Date openingDate;
-    private BigDecimal money;
+    private BigDecimal balance;
     private List<Card> cards;
 
-    public AccountDto(Long id, String number, Date openingDate, BigDecimal money, List<Card> cards) {
+    public AccountDto(Long id, String number, Date openingDate, BigDecimal balance, List<Card> cards) {
         this.id = id;
         this.number = number;
         this.openingDate = openingDate;
-        this.money = money;
+        this.balance = balance;
         this.cards = cards;
     }
 
@@ -31,13 +31,13 @@ public class AccountDto {
                 account.getId(),
                 account.getNumber(),
                 account.getOpeningDate(),
-                account.getMoney(),
+                account.getBalance(),
                 account.getCards()
         );
     }
 
     public Account mapToAccount() {
-        return new Account(id, number, openingDate, money, cards);
+        return new Account(id, number, openingDate, balance, cards);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class AccountDto {
                 "id=" + id +
                 ", number='" + number + '\'' +
                 ", openingDate=" + openingDate +
-                ", money=" + money +
+                ", balance=" + balance +
                 ", cards=" + cards +
                 '}';
     }

@@ -10,5 +10,7 @@ public interface AccountService {
 
     AccountDto findById(Long clientId, Long accountId);
 
+    AccountDto findAccountByCardNumber(Long clientId, String cardNumber);
+
     boolean update(Long clientId, Long accountId, AccountDto accountDto);
 }

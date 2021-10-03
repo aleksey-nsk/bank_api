@@ -17,6 +17,7 @@ public class CardController {
     private CardService cardService;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<CardDto> findAll(
             @PathVariable("client_id") Long clientId,
             @PathVariable("account_id") Long accountId) {

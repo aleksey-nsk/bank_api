@@ -24,8 +24,8 @@ public class Account {
     @Column(name = "opening_date")
     private Date openingDate;
 
-    @Column(name = "money")
-    private BigDecimal money;
+    @Column(name = "balance")
+    private BigDecimal balance;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Card> cards;
@@ -37,11 +37,11 @@ public class Account {
     public Account() {
     }
 
-    public Account(Long id, String number, Date openingDate, BigDecimal money, List<Card> cards) {
+    public Account(Long id, String number, Date openingDate, BigDecimal balance, List<Card> cards) {
         this.id = id;
         this.number = number;
         this.openingDate = openingDate;
-        this.money = money;
+        this.balance = balance;
         this.cards = cards;
     }
 
@@ -56,7 +56,7 @@ public class Account {
                 "id=" + id +
                 ", number='" + number + '\'' +
                 ", openingDate=" + openingDate +
-                ", money=" + money +
+                ", balance=" + balance +
                 ", cards=" + cards +
                 '}';
     }
