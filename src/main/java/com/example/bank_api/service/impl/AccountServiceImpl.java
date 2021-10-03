@@ -95,7 +95,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public boolean update(Long clientId, Long accountId, AccountDto accountDto) {
+    public boolean updateAccountSetBalance(Long clientId, Long accountId, AccountDto accountDto) {
         Account account = accountDto.mapToAccount();
         boolean updated = false;
 
@@ -111,6 +111,31 @@ public class AccountServiceImpl implements AccountService {
             updated = true;
         } else {
             log.debug("В БД отсутствует счёт с clientId=" + clientId + " и accountId=" + accountId);
+        }
+
+        return updated;
+    }
+
+    @Override
+    @Transactional
+    public boolean updateAccountAddBalanceByCardNumber(Long clientId, String cardNumber, BigDecimal add) {
+        log.debug("");
+        log.debug("Внести деньги на счёт, по номеру карты");
+        log.debug("add: " + add);
+
+        boolean updated = false;
+
+        AccountDto accountDto = findAccountByCardNumber(clientId, cardNumber);
+        if (accountDto != null) {
+            BigDecimal currentBalance = accountDto.mapToAccount().getBalance();
+            log.debug("");
+            log.debug("Текущий баланс на счёте: " + currentBalance);
+
+            BigDecimal newBalance = currentBalance.add(add);
+            log.debug("Новый баланс на счёте: " + newBalance);
+
+            accountRepository.updateAccountSetBalance(accountDto.getId(), newBalance);
+            updated = true;
         }
 
         return updated;

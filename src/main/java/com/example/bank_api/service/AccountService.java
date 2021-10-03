@@ -2,6 +2,7 @@ package com.example.bank_api.service;
 
 import com.example.bank_api.dto.AccountDto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface AccountService {
@@ -12,5 +13,7 @@ public interface AccountService {
 
     AccountDto findAccountByCardNumber(Long clientId, String cardNumber);
 
-    boolean update(Long clientId, Long accountId, AccountDto accountDto);
+    boolean updateAccountSetBalance(Long clientId, Long accountId, AccountDto accountDto);
+
+    boolean updateAccountAddBalanceByCardNumber(Long clientId, String cardNumber, BigDecimal add);
 }

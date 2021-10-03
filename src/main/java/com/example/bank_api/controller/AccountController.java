@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -41,12 +42,25 @@ public class AccountController {
 
     @PutMapping("/{account_id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(
+    public void updateAccountSetBalance(
             @PathVariable("client_id") Long clientId,
             @PathVariable("account_id") Long accountId,
             @RequestBody AccountDto accountDto
     ) {
-        boolean updated = accountService.update(clientId, accountId, accountDto);
+        boolean updated = accountService.updateAccountSetBalance(clientId, accountId, accountDto);
+        if (updated == false) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/card")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateAccountAddBalanceByCardNumber(
+            @PathVariable("client_id") Long clientId,
+            @RequestParam("number") String cardNumber,
+            @RequestParam("add") BigDecimal add
+    ) {
+        boolean updated = accountService.updateAccountAddBalanceByCardNumber(clientId, cardNumber, add);
         if (updated == false) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
