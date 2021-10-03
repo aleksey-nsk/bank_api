@@ -44,12 +44,11 @@ public class ClientController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ClientDto update(@PathVariable("id") Long id, @RequestBody ClientDto clientDto) {
-        ClientDto updated = clientService.update(id, clientDto);
-        if (updated == null) {
+    public void update(@PathVariable("id") Long id, @RequestBody ClientDto clientDto) {
+        boolean updated = clientService.update(id, clientDto);
+        if (updated == false) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return updated;
     }
 
     @DeleteMapping("/{id}")

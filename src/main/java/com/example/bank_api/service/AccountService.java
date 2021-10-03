@@ -7,4 +7,6 @@ import java.util.List;
 public interface AccountService {
 
     List<AccountDto> findAll(Long clientId);
+
+    boolean update(Long clientId, Long accountId, AccountDto accountDto);
 }

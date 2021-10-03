@@ -7,6 +7,7 @@ import com.example.bank_api.service.ClientService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -65,22 +66,25 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientDto update(Long id, ClientDto clientDto) {
+    @Transactional
+    public boolean update(Long id, ClientDto clientDto) {
         Client client = clientDto.mapToClient();
-        ClientDto updated = null;
+        boolean updated = false;
 
         Optional<Client> currentClient = clientRepository.findById(id);
         if (currentClient.isPresent()) {
             log.debug("Текущий клиент: " + currentClient.get());
 
-            // Во время обновления изменять ФИО и возраст.
-            // При этом id и счета брать текущие
-            client.setId(currentClient.get().getId());
-            client.setAccounts(currentClient.get().getAccounts());
-            log.debug("Данные клиента для обновления: " + client);
+            // Во время обновления изменять только ФИО и возраст
+            String last = client.getLastname();
+            String first = client.getFirstname();
+            String mid = client.getMiddlename();
+            Integer age = client.getAge();
+            String data = String.format("'%s %s %s', возраст: %d", last, first, mid, age);
+            log.debug("Данные клиента для обновления: " + data);
 
-            updated = ClientDto.valueOf(clientRepository.save(client));
-            log.debug("Обновлённый клиент: " + updated);
+            clientRepository.updateNameAndAge(id, last, first, mid, age);
+            updated = true;
         } else {
             log.debug("В БД отсутствует клиент с id=" + id);
         }

@@ -25,4 +25,17 @@ public class AccountController {
         }
         return accountDtoList;
     }
+
+    @PutMapping("/{client_id}/account/{account_id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void update(
+            @PathVariable("client_id") Long clientId,
+            @PathVariable("account_id") Long accountId,
+            @RequestBody AccountDto accountDto
+    ) {
+        boolean updated = accountService.update(clientId, accountId, accountDto);
+        if (updated == false) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
 }

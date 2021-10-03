@@ -12,7 +12,7 @@ public interface ClientService {
 
     ClientDto save(ClientDto clientDto);
 
-    ClientDto update(Long id, ClientDto clientDto);
+    boolean update(Long id, ClientDto clientDto);
 
     void delete(Long id);
 }
