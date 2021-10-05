@@ -1,10 +1,9 @@
 package com.example.bank_api.unit;
 
 import com.example.bank_api.controller.ClientController;
-import com.example.bank_api.entity.Account;
 import com.example.bank_api.entity.Client;
 import com.example.bank_api.service.ClientService;
-//import com.sun.tools.javac.util.List;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @WebMvcTest(controllers = ClientController.class)
+@Log4j2
 public class ClientControllerMockMvcTest {
 
     @Autowired
@@ -32,33 +32,37 @@ public class ClientControllerMockMvcTest {
 
     @Test
     public void findAllSuccess() throws Exception {
-        Client client = new Client();
-        client.setId(10L); // !!!!!!!!!!!!
-        client.setLastname("test1");
-        client.setFirstname("test2");
-        client.setMiddlename("test3");
-        client.setAge(25);
-        List<Account> list = Collections.emptyList();
-        client.setAccounts(list);
-        System.out.println("client: " + client);
+        Long id = 1L;
+        String last = "Ivanov";
+        String first = "Ivan";
+        String mid = "Ivanovich";
+        Integer age = 22;
 
-//        Client saved = clientRepository.save(client);
-//        System.out.println("saved: " + saved);
+        Client client = new Client(id, last, first, mid, age, Collections.emptyList());
+        log.debug("client: " + client);
 
         List<Client> clientList = new ArrayList<>();
         clientList.add(client);
+        log.debug("clientList: " + clientList);
 
         Mockito.doReturn(clientList)
                 .when(clientService).findAll();
 
-
-
-        String body = "[{\"id\":10,\"lastname\":\"test1\",\"firstname\":\"test2\"," +
-                "\"middlename\":\"test3\",\"age\":25,\"accounts\":[]}]";
+        String expectedBody = "[\n" +
+                "    {\n" +
+                "        \"id\": " + id + ",\n" +
+                "        \"lastname\": \"" + last + "\",\n" +
+                "        \"firstname\": \"" + first + "\",\n" +
+                "        \"middlename\": \"" + mid + "\",\n" +
+                "        \"age\": " + age + ",\n" +
+                "        \"accounts\": []\n" +
+                "    }\n" +
+                "]";
+        log.debug("expectedBody: " + expectedBody);
 
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(body, true));
+                .andExpect(MockMvcResultMatchers.content().json(expectedBody, true));
     }
 }
