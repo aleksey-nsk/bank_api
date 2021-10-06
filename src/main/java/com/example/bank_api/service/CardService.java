@@ -13,11 +13,19 @@ public interface CardService {
     /**
      * <p>Возвращает список карт клиента</p>
      *
+     * @param clientId Идентификатор клиента
+     * @return Список карт
+     */
+    List<CardDto> findAll(Long clientId);
+
+    /**
+     * <p>Возвращает список карт клиента по счёту</p>
+     *
      * @param clientId  Идентификатор клиента
      * @param accountId Идентификатор счёта
      * @return Список карт
      */
-    List<CardDto> findAll(Long clientId, Long accountId);
+    List<CardDto> findAllByAccount(Long clientId, Long accountId);
 
     /**
      * <p>Добавляет новую карту по счёту</p>

@@ -12,27 +12,38 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/client/{client_id}/account/{account_id}/card")
+@RequestMapping("/api/v1/client/{client_id}")
 @Api(description = "Контроллер для карт")
 public class CardController {
 
     @Autowired
     private CardService cardService;
 
-    @GetMapping
+    @GetMapping("/card")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Получить все карты клиента")
-    public List<CardDto> findAll(
-            @PathVariable("client_id") Long clientId,
-            @PathVariable("account_id") Long accountId) {
-        List<CardDto> cardDtoList = cardService.findAll(clientId, accountId);
+    public List<CardDto> findAll(@PathVariable("client_id") Long clientId) {
+        List<CardDto> cardDtoList = cardService.findAll(clientId);
         if (cardDtoList == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return cardDtoList;
     }
 
-    @PostMapping
+    @GetMapping("/account/{account_id}/card")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Получить все карты клиента по счёту")
+    public List<CardDto> findAllByAccount(
+            @PathVariable("client_id") Long clientId,
+            @PathVariable("account_id") Long accountId) {
+        List<CardDto> cardDtoList = cardService.findAllByAccount(clientId, accountId);
+        if (cardDtoList == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return cardDtoList;
+    }
+
+    @PostMapping("/account/{account_id}/card")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Добавить карту по счёту")
     public CardDto save(

@@ -17,7 +17,7 @@ spring:
         username: sa
         password:
     jpa:
-        show-sql: true
+        show-sql: false
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.H2Dialect

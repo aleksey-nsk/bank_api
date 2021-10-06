@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +28,32 @@ public class CardServiceImpl implements CardService {
     private AccountService accountService;
 
     @Override
-    public List<CardDto> findAll(Long clientId, Long accountId) {
+    public List<CardDto> findAll(Long clientId) {
+        log.debug("");
+        log.debug("Поиск всех карт клиента");
+        log.debug("clientId: " + clientId);
+
+        List<Card> cardList = new ArrayList<>();
+
+        List<AccountDto> accountDtoList = accountService.findAll(clientId);
+        for (AccountDto accountDto : accountDtoList) {
+            Long id = accountDto.mapToAccount().getId();
+            List<Card> cardListByAccount = cardRepository.findAllByAccount_Id(id);
+            cardList.addAll(cardListByAccount);
+        }
+
+        log.debug("cardList: " + cardList);
+
+        List<CardDto> cardDtoList = cardList.stream()
+                .map(it -> CardDto.valueOf(it))
+                .collect(Collectors.toList());
+
+        log.debug("cardDtoList: " + cardDtoList);
+        return cardDtoList;
+    }
+
+    @Override
+    public List<CardDto> findAllByAccount(Long clientId, Long accountId) {
         log.debug("");
         log.debug("Поиск всех карт по идентификаторам");
         log.debug("clientId: " + clientId);
