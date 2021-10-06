@@ -42,11 +42,12 @@ public class Client {
         this.accounts = accounts;
     }
 
-    public Client(String lastname, String firstname, String middlename, Integer age) {
+    public Client(String lastname, String firstname, String middlename, Integer age, List<Account> accounts) {
         this.lastname = lastname;
         this.firstname = firstname;
         this.middlename = middlename;
         this.age = age;
+        this.accounts = accounts;
     }
 
     @Override

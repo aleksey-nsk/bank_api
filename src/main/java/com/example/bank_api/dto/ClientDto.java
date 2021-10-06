@@ -16,6 +16,9 @@ public class ClientDto {
     private Integer age;
     private List<Account> accounts;
 
+    public ClientDto() {
+    }
+
     public ClientDto(Long id, String lastname, String firstname, String middlename, Integer age, List<Account> accounts) {
         this.id = id;
         this.lastname = lastname;
@@ -23,6 +26,21 @@ public class ClientDto {
         this.middlename = middlename;
         this.age = age;
         this.accounts = accounts;
+    }
+
+    public ClientDto(String lastname, String firstname, String middlename, Integer age, List<Account> accounts) {
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.middlename = middlename;
+        this.age = age;
+        this.accounts = accounts;
+    }
+
+    public ClientDto(String lastname, String firstname, String middlename, Integer age) {
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.middlename = middlename;
+        this.age = age;
     }
 
     public static ClientDto valueOf(Client client) {

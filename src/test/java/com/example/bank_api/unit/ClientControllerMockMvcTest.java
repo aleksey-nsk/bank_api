@@ -1,26 +1,37 @@
 package com.example.bank_api.unit;
 
 import com.example.bank_api.controller.ClientController;
+import com.example.bank_api.dto.ClientDto;
+import com.example.bank_api.entity.Account;
 import com.example.bank_api.entity.Client;
 import com.example.bank_api.service.ClientService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.RandomStringUtils;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @WebMvcTest(controllers = ClientController.class)
 @Log4j2
 public class ClientControllerMockMvcTest {
+
+    private static final String BASE_URL = "/api/v1/client";
 
     @Autowired
     private MockMvc mockMvc;
@@ -28,41 +39,108 @@ public class ClientControllerMockMvcTest {
     @MockBean
     private ClientService clientService;
 
-    private static final String BASE_URL = "/api/v1/client";
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @Test
-    public void findAllSuccess() throws Exception {
-        Long id = 1L;
-        String last = "Ivanov";
-        String first = "Ivan";
-        String mid = "Ivanovich";
-        Integer age = 22;
+    private ClientDto createClient(Long id) {
+        String last = RandomStringUtils.randomAlphabetic(10);
+        String first = RandomStringUtils.randomAlphabetic(8);
+        String mid = RandomStringUtils.randomAlphabetic(6);
+        Integer age = 41;
+        List<Account> accounts = Collections.emptyList();
 
-        Client client = new Client(id, last, first, mid, age, Collections.emptyList());
+        Client client = new Client(id, last, first, mid, age, accounts);
         log.debug("client: " + client);
 
-        List<Client> clientList = new ArrayList<>();
-        clientList.add(client);
-        log.debug("clientList: " + clientList);
+        ClientDto clientDto = ClientDto.valueOf(client);
+        log.debug("clientDto: " + clientDto);
 
-        Mockito.doReturn(clientList)
+        return clientDto;
+    }
+
+    @Test
+    @DisplayName("[Controller] Успешный поиск всех клиентов")
+    public void findAllSuccess() throws Exception {
+        ClientDto created1 = createClient(1L);
+        ClientDto created2 = createClient(2L);
+
+        List<ClientDto> list = new ArrayList<>();
+        list.add(created1);
+        list.add(created2);
+
+        String expectedJson = objectMapper.writeValueAsString(list);
+        log.debug("expectedJson: " + expectedJson);
+
+        Mockito.doReturn(list)
                 .when(clientService).findAll();
 
-        String expectedBody = "[\n" +
-                "    {\n" +
-                "        \"id\": " + id + ",\n" +
-                "        \"lastname\": \"" + last + "\",\n" +
-                "        \"firstname\": \"" + first + "\",\n" +
-                "        \"middlename\": \"" + mid + "\",\n" +
-                "        \"age\": " + age + ",\n" +
-                "        \"accounts\": []\n" +
-                "    }\n" +
-                "]";
-        log.debug("expectedBody: " + expectedBody);
+        mockMvc.perform(get(BASE_URL))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson, true));
+    }
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(expectedBody, true));
+    @Test
+    @DisplayName("[Controller] Успешный поиск клиента по id")
+    public void findByIdSuccess() throws Exception {
+        Long id = 1L;
+        ClientDto created = createClient(id);
+
+        String expectedJson = objectMapper.writeValueAsString(created);
+        log.debug("expectedJson: " + expectedJson);
+
+        Mockito.doReturn(created)
+                .when(clientService).findById(id);
+
+        mockMvc.perform(get(BASE_URL + "/" + id))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson, true));
+    }
+
+    @Test
+    @DisplayName("[Controller] Клиент по id не найден")
+    public void findByIdFail() throws Exception {
+        Long id = 1L;
+
+        Mockito.doReturn(null)
+                .when(clientService).findById(id);
+
+        mockMvc.perform(get(BASE_URL + "/" + id))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("[Controller] Успешное добавление клиента")
+    public void saveSuccess() throws Exception {
+        Long id = 1L;
+        String last = RandomStringUtils.randomAlphabetic(10);
+        String first = RandomStringUtils.randomAlphabetic(8);
+        String mid = RandomStringUtils.randomAlphabetic(6);
+        Integer age = 41;
+        List<Account> accounts = Collections.emptyList();
+
+        ClientDto clientDto = new ClientDto(last, first, mid, age, accounts);
+        ClientDto saved = new ClientDto(id, last, first, mid, age, accounts);
+        log.debug("clientDto: " + clientDto);
+        log.debug("saved: " + saved);
+
+        String clientDtoJson = objectMapper.writeValueAsString(clientDto);
+        String savedJson = objectMapper.writeValueAsString(saved);
+        log.debug("clientDtoJson: " + clientDtoJson);
+        log.debug("savedJson: " + savedJson);
+
+        Mockito.when(clientService.save(clientDto))
+                .thenReturn(saved);
+
+        mockMvc.perform(
+                        post(BASE_URL)
+                                .content(clientDtoJson)
+                                .contentType(APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().json(savedJson, true));
     }
 }
