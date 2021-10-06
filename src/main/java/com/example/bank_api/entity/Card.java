@@ -35,8 +35,6 @@ public class Card {
         this.releaseDate = releaseDate;
     }
 
-
-
     @JsonIgnore
     public Account getAccount() {
         return account;

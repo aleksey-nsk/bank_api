@@ -135,10 +135,10 @@ public class ClientControllerMockMvcTest {
                 .thenReturn(saved);
 
         mockMvc.perform(
-                        post(BASE_URL)
-                                .content(clientDtoJson)
-                                .contentType(APPLICATION_JSON)
-                )
+                post(BASE_URL)
+                        .content(clientDtoJson)
+                        .contentType(APPLICATION_JSON)
+        )
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().json(savedJson, true));

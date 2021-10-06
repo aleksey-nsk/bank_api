@@ -79,43 +79,72 @@ public class ClientServiceTest {
     @Test
     @DisplayName("[Service] Успешный поиск клиента по id")
     public void findByIdSuccess() {
-//        Long id = 1L;
-//
-//        Client client = new Client(id, "Last", "First", "Mid", 22, Collections.emptyList());
-//        log.debug("client: " + client);
-//
-//        Mockito.doReturn(Optional.of(client))
-//                .when(clientRepository).findById(id);
-        ClientDto clientDto1 = createClient(1L);
+        Long id = 1L;
+        ClientDto clientDto = createClient(id);
+        Client client = clientDto.mapToClient();
 
-        Client client1 = clientDto1.mapToClient();
+        Mockito.doReturn(Optional.of(client))
+                .when(clientRepository).findById(id);
 
-        Optional<Client> optionalClient = clientRepository.findById(id);
+        ClientDto actual = clientService.findById(id);
+        log.debug("actual: " + actual);
 
-        Mockito.doReturn(clientList)
-                .when(clientRepository).findAll();
-
-        ClientDto clientDto = clientService.findById(id);
-        log.debug("clientDto: " + clientDto);
-
-        Assertions.assertThat(clientDto)
-                .isNotNull();
-
-        Assertions.assertThat(clientDto)
-                .isEqualTo(clientDto);
+        Assertions.assertThat(actual).isNotNull();
+        Assertions.assertThat(actual).isEqualTo(clientDto);
     }
 
     @Test
-    public void findByIdReturnNull() {
+    @DisplayName("[Service] Клиент по id не найден")
+    public void findByIdFail() {
         Long id = 1L;
 
         Mockito.doReturn(Optional.empty())
                 .when(clientRepository).findById(id);
 
-        ClientDto clientDto = clientService.findById(id);
-        log.debug("clientDto: " + clientDto);
+        ClientDto actual = clientService.findById(id);
+        log.debug("actual: " + actual);
 
-        Assertions.assertThat(clientDto)
-                .isNull();
+        Assertions.assertThat(actual).isNull();
+    }
+
+    @Test
+    @DisplayName("[Service] Успешное добавление клиента")
+    public void saveSuccess() {
+        ClientDto clientDto = createClient(1L);
+        Client client = clientDto.mapToClient();
+
+        Mockito.when(clientRepository.findByLastnameAndFirstnameAndMiddlename(
+                clientDto.getLastname(),
+                clientDto.getFirstname(),
+                clientDto.getMiddlename())
+        )
+                .thenReturn(null);
+
+        Mockito.when(clientRepository.save(client))
+                .thenReturn(client);
+
+        ClientDto actual = clientService.save(clientDto);
+        log.debug("actual: " + actual);
+
+        Assertions.assertThat(actual).isNotNull();
+        Assertions.assertThat(actual).isEqualTo(clientDto);
+    }
+
+    @Test
+    @DisplayName("[Service] Дубликат клиента не сохранён")
+    public void saveFail() {
+        ClientDto clientDto = createClient(1L);
+
+        Mockito.when(clientRepository.findByLastnameAndFirstnameAndMiddlename(
+                clientDto.getLastname(),
+                clientDto.getFirstname(),
+                clientDto.getMiddlename())
+        )
+                .thenReturn(new Client());
+
+        ClientDto actual = clientService.save(clientDto);
+        log.debug("actual: " + actual);
+
+        Assertions.assertThat(actual).isNull();
     }
 }
