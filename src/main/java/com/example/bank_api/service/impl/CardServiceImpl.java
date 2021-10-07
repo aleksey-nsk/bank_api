@@ -6,7 +6,6 @@ import com.example.bank_api.entity.Card;
 import com.example.bank_api.repository.AccountRepository;
 import com.example.bank_api.repository.CardRepository;
 import com.example.bank_api.repository.ClientRepository;
-import com.example.bank_api.service.AccountService;
 import com.example.bank_api.service.CardService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.RandomStringUtils;
@@ -21,9 +20,6 @@ import java.util.Date;
 public class CardServiceImpl implements CardService {
 
     @Autowired
-    private AccountService accountService;
-
-    @Autowired
     private AccountRepository accountRepository;
 
     @Autowired
@@ -31,52 +27,6 @@ public class CardServiceImpl implements CardService {
 
     @Autowired
     private ClientRepository clientRepository;
-
-//    @Override
-//    public List<CardDto> findAll(Long clientId) {
-//        log.debug("");
-//        log.debug("Поиск всех карт клиента");
-//        log.debug("clientId: " + clientId);
-//
-//        List<Card> cardList = new ArrayList<>();
-//
-//        List<AccountDto> accountDtoList = accountService.findAll(clientId);
-//        for (AccountDto accountDto : accountDtoList) {
-//            Long id = accountDto.mapToAccount().getId();
-//            List<Card> cardListByAccount = cardRepository.findAllByAccount_Id(id);
-//            cardList.addAll(cardListByAccount);
-//        }
-//
-//        log.debug("cardList: " + cardList);
-//
-//        List<CardDto> cardDtoList = cardList.stream()
-//                .map(it -> CardDto.valueOf(it))
-//                .collect(Collectors.toList());
-//
-//        log.debug("cardDtoList: " + cardDtoList);
-//        return cardDtoList;
-//    }
-
-//    @Override
-//    public List<CardDto> findAllByAccount(Long clientId, Long accountId) {
-//        log.debug("");
-//        log.debug("Поиск всех карт по идентификаторам");
-//        log.debug("clientId: " + clientId);
-//        log.debug("accountId: " + accountId);
-//
-//        List<CardDto> cardDtoList = null;
-//
-//        AccountDto accountDto = accountService.findById(clientId, accountId);
-//        if (accountDto != null) {
-//            cardDtoList = cardRepository.findAllByAccount_Id(accountId)
-//                    .stream()
-//                    .map(it -> CardDto.valueOf(it))
-//                    .collect(Collectors.toList());
-//        }
-//
-//        log.debug("cardDtoList: " + cardDtoList);
-//        return cardDtoList;
-//    }
 
     @Override
     @Transactional
@@ -88,8 +38,6 @@ public class CardServiceImpl implements CardService {
 
         Account account = accountRepository.findAccountByIdAndClient_Id(accountId, clientId);
         if (account != null) {
-//        AccountDto accountDto = accountService.findById(clientId, accountId);
-//        if (accountDto != null) {
             String number = RandomStringUtils.randomNumeric(16);
             log.debug("");
             log.debug("Сгенерирован случайный номер карты: " + number);
@@ -98,8 +46,6 @@ public class CardServiceImpl implements CardService {
             log.debug("Текущая дата: " + currentDate);
 
             Card card = new Card(number, currentDate);
-//            card.setNumber(number);
-//            card.setReleaseDate(currentDate);
             log.debug("Параметры для сохранения карты: " + card);
 
             saved = CardDto.valueOf(cardRepository.save(card));
