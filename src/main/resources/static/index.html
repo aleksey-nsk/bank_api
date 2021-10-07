@@ -18,7 +18,7 @@
 
     <div class="row">
         <h1 class="col-md-6">Профиль клиента</h1>
-        <a class="btn" href="/logout">Выйти</a>
+        <a class="btn" href="/logout">{{Client.lastname}} {{Client.firstname}} {{Client.middlename}} | Выйти</a>
     </div>
 
     <div>
@@ -65,10 +65,12 @@
                     <input class="form-control" type="number" ng-model="add">
                 </td>
                 <td>
-                    <button class="btn btn-primary" ng-click="addBalance(card.number, add)">Зачислить</button>
+                    <button class="btn btn-primary" ng-click="addBalance(Client.id, card.number, add)">
+                        Зачислить
+                    </button>
                 </td>
                 <td>
-                    <button class="btn-danger" ng-click="deleteCard(card.id)">Удалить карту</button>
+                    <button class="btn-danger" ng-click="deleteCard(Client.id, card.id)">Удалить карту</button>
                 </td>
             </tr>
             </tbody>
@@ -78,7 +80,7 @@
     <div>
         <br/>
         <h3>Выпустить новую карту</h3>
-        <form novalidate ng-submit="saveCard()">
+        <form novalidate ng-submit="saveCard(Client.id)">
             <div class="form-group col-md-6">
                 <label for="accountSelect">Счёт</label>
                 <select class="form-control" id="accountSelect" ng-model="accountNumberSelected">

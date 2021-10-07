@@ -5,6 +5,15 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
     const contextPath = 'http://localhost:8082';
     console.log(contextPath); // лог в консоль браузера (F12 -> Console)
 
+    // Получить клиента по идентификатору
+    $scope.getClient = function (clientId) {
+        const url = contextPath + '/api/v1/client/' + clientId;
+        $http.get(url)
+                .then(function (resp) {
+                    $scope.Client = resp.data;
+                });
+    };
+
     // Получить все счета клиента
     $scope.getAccounts = function (clientId) {
         const url = contextPath + '/api/v1/client/' + clientId + '/account';
@@ -16,40 +25,42 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
 
     // Получить данные для заполнения страницы
     $scope.fillPage = function (clientId) {
+        $scope.getClient(clientId);
         $scope.getAccounts(clientId);
     };
 
     // Внести деньги на счёт
-    $scope.addBalance = function (cardNumber, add) {
-        const url = contextPath + '/api/v1/client/' + 1 + '/account/card?number=' + cardNumber + '&add=' + add;
+    $scope.addBalance = function (clientId, cardNumber, add) {
+        const url = contextPath + '/api/v1/client/' + clientId + '/account/card?number=' + cardNumber + '&add=' + add;
         console.log(url);
         $http.put(url)
                 .then(function (resp) {
-                    $scope.fillPage(1);
+                    $scope.fillPage(clientId);
                 });
     };
 
     // Удалить карту
-    $scope.deleteCard = function (cardId) {
-        const url = contextPath + '/api/v1/client/' + 1 + '/card/' + cardId;
+    $scope.deleteCard = function (clientId, cardId) {
+        const url = contextPath + '/api/v1/client/' + clientId + '/card/' + cardId;
         console.log(url);
         $http.delete(url)
                 .then(function (resp) {
-                    $scope.fillPage(1);
+                    $scope.fillPage(clientId);
                 });
     };
 
     // Добавить карту по счёту
-    $scope.saveCard = function () {
+    $scope.saveCard = function (clientId) {
         const account = $scope.Accounts.find(entry => entry.number === $scope.accountNumberSelected);
-        const url = contextPath + '/api/v1/client/' + 1 + '/account/' + account.id + '/card';
+        const url = contextPath + '/api/v1/client/' + clientId + '/account/' + account.id + '/card';
         console.log(url);
         $http.post(url)
                 .then(function (resp) {
-                    $scope.fillPage(1);
+                    $scope.fillPage(clientId);
                 });
     };
 
-    $scope.fillPage(1);
+    const CLIENT_ID = 1;
+    $scope.fillPage(CLIENT_ID);
 
 });
