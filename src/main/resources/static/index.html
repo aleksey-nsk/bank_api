@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Онлайн банк</title>
 
-    <!-- Подключаем Bootstrap, jQuery, AngularJS -->
+    <!-- Подключить Bootstrap, jQuery, AngularJS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
@@ -28,7 +28,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="account in Accounts"> <!-- получаем из бэкенда массив, и по нему итерируемся -->
+            <tr ng-repeat="account in Accounts">
                 <td>{{account.number}}</td>
                 <td>{{account.openingDate | date:'d MMM yyyy'}}</td>
                 <td>{{account.balance}}</td>
@@ -45,12 +45,14 @@
             <tr>
                 <td>Номер карты</td>
                 <td>Дата выпуска</td>
+                <td>Номер счёта</td>
             </tr>
             </thead>
-            <tbody>
-            <tr ng-repeat="card in Cards"> <!-- получаем из бэкенда массив, и по нему итерируемся -->
+            <tbody ng-repeat="account in Accounts">
+            <tr ng-repeat="card in account.cards">
                 <td>{{card.number}}</td>
                 <td>{{card.releaseDate | date:'d MMM yyyy'}}</td>
+                <td>{{account.number}}</td>
             </tr>
             </tbody>
         </table>
