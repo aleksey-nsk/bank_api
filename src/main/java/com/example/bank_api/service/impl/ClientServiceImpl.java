@@ -1,7 +1,11 @@
 package com.example.bank_api.service.impl;
 
 import com.example.bank_api.dto.ClientDto;
+import com.example.bank_api.entity.Account;
+import com.example.bank_api.entity.Card;
 import com.example.bank_api.entity.Client;
+import com.example.bank_api.repository.AccountRepository;
+import com.example.bank_api.repository.CardRepository;
 import com.example.bank_api.repository.ClientRepository;
 import com.example.bank_api.service.ClientService;
 import lombok.extern.log4j.Log4j2;
@@ -20,6 +24,11 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private CardRepository cardRepository;
 
     @Override
     public List<ClientDto> findAll() {
@@ -93,13 +102,25 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void delete(Long id) {
-        log.debug("Удалить из БД клиента с идентификатором: " + id);
+    public void delete(Long clientId) {
+        log.debug("Удалить из БД клиента");
 
-        if (clientRepository.findById(id).isPresent()) {
-            clientRepository.deleteById(id);
+        List<Account> accountList = accountRepository.findAccountByClientId(clientId);
+        for (Account account : accountList) {
+            List<Card> cardList = cardRepository.findCardByAccount_Id(account.getId());
+            for (Card card : cardList) {
+                log.debug("  удалить карты с идентификатором: " + card.getId());
+                cardRepository.deleteById(card.getId());
+            }
+            log.debug("  удалить счёт с идентификатором: " + account.getId());
+            accountRepository.deleteById(account.getId());
+        }
+
+        if (clientRepository.findById(clientId).isPresent()) {
+            log.debug("  удалить клиента с идентификатором: " + clientId);
+            clientRepository.deleteById(clientId);
         } else {
-            log.debug("В БД отсутствует клиент с id=" + id);
+            log.debug("В БД отсутствует клиент с id=" + clientId);
         }
     }
 }

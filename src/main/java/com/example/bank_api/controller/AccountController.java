@@ -31,19 +31,19 @@ public class AccountController {
         return accountDtoList;
     }
 
-    @GetMapping("/card")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Получить счёт по номеру карты")
-    public AccountDto findAccountByCardNumber(
-            @PathVariable("client_id") Long clientId,
-            @RequestParam("number") String cardNumber
-    ) {
-        AccountDto accountDto = accountService.findAccountByCardNumber(clientId, cardNumber);
-        if (accountDto == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return accountDto;
-    }
+//    @GetMapping("/card")
+//    @ResponseStatus(HttpStatus.OK)
+//    @ApiOperation(value = "Получить счёт по номеру карты")
+//    public AccountDto findAccountByCardNumber(
+//            @PathVariable("client_id") Long clientId,
+//            @RequestParam("number") String cardNumber
+//    ) {
+//        AccountDto accountDto = accountService.findAccountByCardNumber(clientId, cardNumber);
+//        if (accountDto == null) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        }
+//        return accountDto;
+//    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -56,19 +56,19 @@ public class AccountController {
         return saved;
     }
 
-    @PutMapping("/{account_id}")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Изменить баланс на счёте")
-    public void updateAccountSetBalance(
-            @PathVariable("client_id") Long clientId,
-            @PathVariable("account_id") Long accountId,
-            @RequestBody AccountDto accountDto
-    ) {
-        boolean updated = accountService.updateAccountSetBalance(clientId, accountId, accountDto);
-        if (updated == false) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-    }
+//    @PutMapping("/{account_id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    @ApiOperation(value = "Изменить баланс на счёте")
+//    public void updateAccountSetBalance(
+//            @PathVariable("client_id") Long clientId,
+//            @PathVariable("account_id") Long accountId,
+//            @RequestBody AccountDto accountDto
+//    ) {
+//        boolean updated = accountService.updateAccountSetBalance(clientId, accountId, accountDto);
+//        if (updated == false) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     @PutMapping("/card")
     @ResponseStatus(HttpStatus.OK)

@@ -2,6 +2,8 @@ package com.example.bank_api.unit;
 
 import com.example.bank_api.dto.ClientDto;
 import com.example.bank_api.entity.Client;
+import com.example.bank_api.repository.AccountRepository;
+import com.example.bank_api.repository.CardRepository;
 import com.example.bank_api.repository.ClientRepository;
 import com.example.bank_api.service.ClientService;
 import com.example.bank_api.service.impl.ClientServiceImpl;
@@ -30,6 +32,12 @@ public class ClientServiceTest {
 
     @MockBean
     private ClientRepository clientRepository;
+
+    @MockBean
+    private AccountRepository accountRepository;
+
+    @MockBean
+    private CardRepository cardRepository;
 
     private ClientDto createClient(Long id) {
         String last = RandomStringUtils.randomAlphabetic(10);
@@ -111,10 +119,10 @@ public class ClientServiceTest {
         Client client = clientDto.mapToClient();
 
         Mockito.when(clientRepository.findByLastnameAndFirstnameAndMiddlename(
-                        clientDto.getLastname(),
-                        clientDto.getFirstname(),
-                        clientDto.getMiddlename())
-                )
+                clientDto.getLastname(),
+                clientDto.getFirstname(),
+                clientDto.getMiddlename())
+        )
                 .thenReturn(null);
 
         Mockito.when(clientRepository.save(client))
@@ -133,10 +141,10 @@ public class ClientServiceTest {
         ClientDto clientDto = createClient(1L);
 
         Mockito.when(clientRepository.findByLastnameAndFirstnameAndMiddlename(
-                        clientDto.getLastname(),
-                        clientDto.getFirstname(),
-                        clientDto.getMiddlename())
-                )
+                clientDto.getLastname(),
+                clientDto.getFirstname(),
+                clientDto.getMiddlename())
+        )
                 .thenReturn(new Client());
 
         ClientDto actual = clientService.save(clientDto);

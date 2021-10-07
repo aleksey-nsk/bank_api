@@ -50,51 +50,51 @@ public class AccountServiceImpl implements AccountService {
         return accountDtoList;
     }
 
-    @Override
-    public AccountDto findById(Long clientId, Long accountId) {
-        log.debug("");
-        log.debug("Поиск счёта по идентификаторам");
-        log.debug("clientId: " + clientId);
-        log.debug("accountId: " + accountId);
+//    @Override
+//    public AccountDto findById(Long clientId, Long accountId) {
+//        log.debug("");
+//        log.debug("Поиск счёта по идентификаторам");
+//        log.debug("clientId: " + clientId);
+//        log.debug("accountId: " + accountId);
+//
+//        AccountDto accountDto = null;
+//
+//        Account account = accountRepository.findAccountByIdAndClient_Id(accountId, clientId);
+//        if (account != null) {
+//            accountDto = AccountDto.valueOf(account);
+//        }
+//
+//        log.debug("accountDto: " + accountDto);
+//        return accountDto;
+//    }
 
-        AccountDto accountDto = null;
-
-        Account account = accountRepository.findAccountByIdAndClient_Id(accountId, clientId);
-        if (account != null) {
-            accountDto = AccountDto.valueOf(account);
-        }
-
-        log.debug("accountDto: " + accountDto);
-        return accountDto;
-    }
-
-    @Override
-    public AccountDto findAccountByCardNumber(Long clientId, String cardNumber) {
-        log.debug("");
-        log.debug("Поиск счёта по номеру карты");
-        log.debug("clientId: " + clientId);
-        log.debug("cardNumber: " + cardNumber);
-
-        AccountDto accountDto = null;
-
-        ClientDto clientDto = clientService.findById(clientId);
-        Card card = cardRepository.findCardByNumber(cardNumber);
-        log.debug("card: " + card);
-
-        if (clientDto != null && card != null) {
-            Account accountByCard = card.getAccount();
-            log.debug("accountByCard: " + accountByCard);
-
-            Client clientByAccount = accountByCard.getClient();
-            log.debug("clientByAccount: " + clientByAccount);
-
-            if (clientByAccount.getId().equals(clientId)) {
-                accountDto = AccountDto.valueOf(accountByCard);
-            }
-        }
-
-        return accountDto;
-    }
+//    @Override
+//    public AccountDto findAccountByCardNumber(Long clientId, String cardNumber) {
+//        log.debug("");
+//        log.debug("Поиск счёта по номеру карты");
+//        log.debug("clientId: " + clientId);
+//        log.debug("cardNumber: " + cardNumber);
+//
+//        AccountDto accountDto = null;
+//
+//        ClientDto clientDto = clientService.findById(clientId);
+//        Card card = cardRepository.findCardByNumber(cardNumber);
+//        log.debug("card: " + card);
+//
+//        if (clientDto != null && card != null) {
+//            Account accountByCard = card.getAccount();
+//            log.debug("accountByCard: " + accountByCard);
+//
+//            Client clientByAccount = accountByCard.getClient();
+//            log.debug("clientByAccount: " + clientByAccount);
+//
+//            if (clientByAccount.getId().equals(clientId)) {
+//                accountDto = AccountDto.valueOf(accountByCard);
+//            }
+//        }
+//
+//        return accountDto;
+//    }
 
     @Override
     @Transactional
@@ -128,50 +128,80 @@ public class AccountServiceImpl implements AccountService {
         return saved;
     }
 
-    @Override
-    @Transactional
-    public boolean updateAccountSetBalance(Long clientId, Long accountId, AccountDto accountDto) {
-        Account account = accountDto.mapToAccount();
-        boolean updated = false;
-
-        Account currentAccount = accountRepository.findAccountByIdAndClient_Id(accountId, clientId);
-        if (currentAccount != null) {
-            log.debug("Текущий счёт: " + currentAccount);
-
-            // Во время обновления изменять только баланс на счету
-            BigDecimal balance = account.getBalance();
-            log.debug("Обновить баланс на счёте: " + balance);
-
-            accountRepository.updateAccountSetBalance(accountId, balance);
-            updated = true;
-        } else {
-            log.debug("В БД отсутствует счёт с clientId=" + clientId + " и accountId=" + accountId);
-        }
-
-        return updated;
-    }
+//    @Override
+//    @Transactional
+//    public boolean updateAccountSetBalance(Long clientId, Long accountId, AccountDto accountDto) {
+//        Account account = accountDto.mapToAccount();
+//        boolean updated = false;
+//
+//        Account currentAccount = accountRepository.findAccountByIdAndClient_Id(accountId, clientId);
+//        if (currentAccount != null) {
+//            log.debug("Текущий счёт: " + currentAccount);
+//
+//            // Во время обновления изменять только баланс на счету
+//            BigDecimal balance = account.getBalance();
+//            log.debug("Обновить баланс на счёте: " + balance);
+//
+//            accountRepository.updateAccountSetBalance(accountId, balance);
+//            updated = true;
+//        } else {
+//            log.debug("В БД отсутствует счёт с clientId=" + clientId + " и accountId=" + accountId);
+//        }
+//
+//        return updated;
+//    }
 
     @Override
     @Transactional
     public boolean updateAccountAddBalanceByCardNumber(Long clientId, String cardNumber, BigDecimal add) {
         log.debug("");
         log.debug("Внести деньги на счёт, по номеру карты");
-        log.debug("add: " + add);
+        log.debug("  clientId: " + clientId);
+        log.debug("  cardNumber: " + cardNumber);
+        log.debug("  add: " + add);
 
         boolean updated = false;
 
-        AccountDto accountDto = findAccountByCardNumber(clientId, cardNumber);
-        if (accountDto != null) {
-            BigDecimal currentBalance = accountDto.mapToAccount().getBalance();
-            log.debug("");
-            log.debug("Текущий баланс на счёте: " + currentBalance);
+//        AccountDto accountDto = findAccountByCardNumber(clientId, cardNumber);
+//        if (accountDto != null) {
+//            BigDecimal currentBalance = accountDto.mapToAccount().getBalance();
+//            log.debug("");
+//            log.debug("Текущий баланс на счёте: " + currentBalance);
+//
+//            BigDecimal newBalance = currentBalance.add(add);
+//            log.debug("Новый баланс на счёте: " + newBalance);
+//
+//            accountRepository.updateAccountSetBalance(accountDto.getId(), newBalance);
+//            updated = true;
+//        }
 
-            BigDecimal newBalance = currentBalance.add(add);
-            log.debug("Новый баланс на счёте: " + newBalance);
 
-            accountRepository.updateAccountSetBalance(accountDto.getId(), newBalance);
-            updated = true;
+        ClientDto clientDto = clientService.findById(clientId);
+        Card card = cardRepository.findCardByNumber(cardNumber);
+        log.debug("card: " + card);
+
+        if (clientDto != null && card != null) {
+            Account accountByCard = card.getAccount();
+            log.debug("accountByCard: " + accountByCard);
+
+            Client clientByAccount = accountByCard.getClient();
+            log.debug("clientByAccount: " + clientByAccount);
+
+            if (clientByAccount.getId().equals(clientId)) {
+//                AccountDto accountDto = AccountDto.valueOf(accountByCard);
+                BigDecimal currentBalance = accountByCard.getBalance();
+                log.debug("");
+                log.debug("Текущий баланс на счёте: " + currentBalance);
+
+                BigDecimal newBalance = currentBalance.add(add);
+                log.debug("Новый баланс на счёте: " + newBalance);
+
+                log.debug("Обновить счёт - установить новый баланс");
+                accountRepository.updateAccountSetBalance(accountByCard.getId(), newBalance);
+                updated = true;
+            }
         }
+
 
         return updated;
     }

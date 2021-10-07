@@ -37,6 +37,11 @@ public class Card {
         this.releaseDate = releaseDate;
     }
 
+    public Card(String number, Date releaseDate) {
+        this.number = number;
+        this.releaseDate = releaseDate;
+    }
+
     @JsonIgnore
     public Account getAccount() {
         return account;

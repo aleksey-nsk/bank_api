@@ -95,34 +95,34 @@ public class CardControllerMockMvcIntegrationTest {
         return cardService.save(clientId, accountId);
     }
 
-    @Test
-    @DisplayName("[Integration] Успешный поиск всех карт клиента")
-    public void findAllSuccess() throws Exception {
-        Long savedClientId = saveClientInDB().getId();
-        Long savedAccountId = saveAccountInDB(savedClientId).getId();
-
-        CardDto savedCardDto1 = saveCardInDB(savedClientId, savedAccountId);
-        CardDto savedCardDto2 = saveCardInDB(savedClientId, savedAccountId);
-
-        List<CardDto> list = new ArrayList<>();
-        list.add(savedCardDto1);
-        list.add(savedCardDto2);
-
-        String savedAsJson = objectMapper.writeValueAsString(list);
-        log.debug("savedAsJson: " + savedAsJson);
-
-        String url = BASE_URL + "/" + savedClientId + "/card";
-        log.debug("url: " + url);
-
-        mockMvc.perform(get(url))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(savedAsJson, true));
-
-        assertThat(clientRepository.findAll().size()).isEqualTo(1);
-        assertThat(accountRepository.findAll().size()).isEqualTo(1);
-        assertThat(cardRepository.findAll().size()).isEqualTo(2);
-    }
+//    @Test
+//    @DisplayName("[Integration] Успешный поиск всех карт клиента")
+//    public void findAllSuccess() throws Exception {
+//        Long savedClientId = saveClientInDB().getId();
+//        Long savedAccountId = saveAccountInDB(savedClientId).getId();
+//
+//        CardDto savedCardDto1 = saveCardInDB(savedClientId, savedAccountId);
+//        CardDto savedCardDto2 = saveCardInDB(savedClientId, savedAccountId);
+//
+//        List<CardDto> list = new ArrayList<>();
+//        list.add(savedCardDto1);
+//        list.add(savedCardDto2);
+//
+//        String savedAsJson = objectMapper.writeValueAsString(list);
+//        log.debug("savedAsJson: " + savedAsJson);
+//
+//        String url = BASE_URL + "/" + savedClientId + "/card";
+//        log.debug("url: " + url);
+//
+//        mockMvc.perform(get(url))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(content().json(savedAsJson, true));
+//
+//        assertThat(clientRepository.findAll().size()).isEqualTo(1);
+//        assertThat(accountRepository.findAll().size()).isEqualTo(1);
+//        assertThat(cardRepository.findAll().size()).isEqualTo(2);
+//    }
 
     @Test
     @DisplayName("[Integration] Успешное добавление карты по счёту")
