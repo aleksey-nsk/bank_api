@@ -47,6 +47,13 @@ public class Account {
         this.cards = cards;
     }
 
+    public Account(String number, Date openingDate, BigDecimal balance, List<Card> cards) {
+        this.number = number;
+        this.openingDate = openingDate;
+        this.balance = balance;
+        this.cards = cards;
+    }
+
     @JsonIgnore
     public Client getClient() {
         return client;

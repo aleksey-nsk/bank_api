@@ -38,6 +38,15 @@ public interface AccountService {
     AccountDto findAccountByCardNumber(Long clientId, String cardNumber);
 
     /**
+     * <p>Добавляет счёт клиенту (без карт)</p>
+     *
+     * @param clientId
+     * @param accountDto
+     * @return
+     */
+    AccountDto save(Long clientId);
+
+    /**
      * <p>Обновляет счёт: устанавливает новое значение баланса</p>
      *
      * @param clientId   Идентификатор клиента

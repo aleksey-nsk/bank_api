@@ -79,7 +79,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     @Transactional
-    public CardDto save(Long clientId, Long accountId, CardDto cardDto) {
+    public CardDto save(Long clientId, Long accountId) {
         log.debug("");
         log.debug("Выпуск новой карты по счёту");
 

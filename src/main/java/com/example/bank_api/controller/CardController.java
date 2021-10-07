@@ -48,9 +48,9 @@ public class CardController {
     @ApiOperation(value = "Добавить карту по счёту")
     public CardDto save(
             @PathVariable("client_id") Long clientId,
-            @PathVariable("account_id") Long accountId,
-            @RequestBody CardDto cardDto) {
-        CardDto saved = cardService.save(clientId, accountId, cardDto);
+            @PathVariable("account_id") Long accountId
+            /*,@RequestBody CardDto cardDto*/) {
+        CardDto saved = cardService.save(clientId, accountId);
         if (saved == null) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         }

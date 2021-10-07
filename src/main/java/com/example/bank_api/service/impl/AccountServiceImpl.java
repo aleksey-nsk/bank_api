@@ -10,11 +10,14 @@ import com.example.bank_api.repository.CardRepository;
 import com.example.bank_api.service.AccountService;
 import com.example.bank_api.service.ClientService;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,6 +94,38 @@ public class AccountServiceImpl implements AccountService {
         }
 
         return accountDto;
+    }
+
+    @Override
+    @Transactional
+    public AccountDto save(Long clientId) {
+        log.debug("");
+        log.debug("Добавить счёт клиенту (без карт)");
+
+        AccountDto saved = null;
+
+        ClientDto clientDto = clientService.findById(clientId);
+        if (clientDto != null) {
+            String number = RandomStringUtils.randomNumeric(20);
+            log.debug("");
+            log.debug("Сгенерирован случайный номер счёта: " + number);
+
+            Date currentDate = new Date();
+            log.debug("Текущая дата: " + currentDate);
+
+            List<Card> cards = Collections.emptyList();
+
+            Account account = new Account(number, currentDate, BigDecimal.valueOf(0), cards);
+            log.debug("Параметры для сохранения счёта: " + account);
+
+            saved = AccountDto.valueOf(accountRepository.save(account));
+            log.debug("В БД сохранён счёт: " + saved);
+
+            log.debug("Для сохранённого счёта указать идентификатор клиента");
+            accountRepository.updateAccountSetClient(clientDto.mapToClient(), saved.getId());
+        }
+
+        return saved;
     }
 
     @Override

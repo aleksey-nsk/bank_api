@@ -45,6 +45,17 @@ public class AccountController {
         return accountDto;
     }
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Добавить счёт клиенту (без карт)")
+    public AccountDto save(@PathVariable("client_id") Long clientId) {
+        AccountDto saved = accountService.save(clientId);
+        if (saved == null) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        return saved;
+    }
+
     @PutMapping("/{account_id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Изменить баланс на счёте")

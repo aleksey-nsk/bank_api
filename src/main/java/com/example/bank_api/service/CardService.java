@@ -32,10 +32,9 @@ public interface CardService {
      *
      * @param clientId  Идентификатор клиента
      * @param accountId Идентификатор счёта
-     * @param cardDto   Данные карты для добавления
      * @return Сохранённая в БД карта
      */
-    CardDto save(Long clientId, Long accountId, CardDto cardDto);
+    CardDto save(Long clientId, Long accountId);
 
     /**
      * <p>Удаляет карту из БД</p>

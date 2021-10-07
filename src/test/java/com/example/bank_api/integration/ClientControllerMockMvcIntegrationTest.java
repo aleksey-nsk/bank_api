@@ -3,11 +3,13 @@ package com.example.bank_api.integration;
 import com.example.bank_api.dto.ClientDto;
 import com.example.bank_api.entity.Account;
 import com.example.bank_api.entity.Client;
+import com.example.bank_api.repository.AccountRepository;
+import com.example.bank_api.repository.CardRepository;
 import com.example.bank_api.repository.ClientRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.RandomStringUtils;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -42,8 +45,16 @@ public class ClientControllerMockMvcIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @AfterEach
-    void clearDB() {
+    @Autowired
+    private CardRepository cardRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @BeforeEach
+    void setUp() {
+        cardRepository.deleteAll();
+        accountRepository.deleteAll();
         clientRepository.deleteAll();
     }
 
@@ -51,7 +62,7 @@ public class ClientControllerMockMvcIntegrationTest {
         String last = RandomStringUtils.randomAlphabetic(10);
         String first = RandomStringUtils.randomAlphabetic(8);
         String mid = RandomStringUtils.randomAlphabetic(6);
-        Integer age = 33;
+        Integer age = ThreadLocalRandom.current().nextInt(18, 120);
         List<Account> accounts = Collections.emptyList();
 
         Client client = new Client(last, first, mid, age, accounts);
@@ -70,10 +81,9 @@ public class ClientControllerMockMvcIntegrationTest {
         String last = RandomStringUtils.randomAlphabetic(10);
         String first = RandomStringUtils.randomAlphabetic(8);
         String mid = RandomStringUtils.randomAlphabetic(6);
-        Integer age = 41;
-        List<Account> accounts = Collections.emptyList();
+        Integer age = ThreadLocalRandom.current().nextInt(18, 120);
 
-        Client client = new Client(last, first, mid, age, accounts);
+        Client client = new Client(last, first, mid, age);
         log.debug("client: " + client);
 
         ClientDto clientDto = ClientDto.valueOf(client);
@@ -118,13 +128,13 @@ public class ClientControllerMockMvcIntegrationTest {
     @Test
     @DisplayName("[Integration] Клиент по id не найден")
     public void findByIdFail() throws Exception {
-        mockMvc.perform(get(BASE_URL + "/1"))
+        mockMvc.perform(get(BASE_URL + "/999"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("[Integration] Успешное добавление клиента")
+    @DisplayName("[Integration] Успешное добавление клиента без счетов")
     public void saveSuccess() throws Exception {
         ClientDto clientDto = createClient();
 

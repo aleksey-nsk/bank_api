@@ -1,7 +1,6 @@
 package com.example.bank_api.integration;
 
 import com.example.bank_api.dto.ClientDto;
-import com.example.bank_api.entity.Account;
 import com.example.bank_api.entity.Client;
 import com.example.bank_api.repository.ClientRepository;
 import lombok.extern.log4j.Log4j2;
@@ -22,6 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -47,14 +47,13 @@ public class ClientControllerRestTemplateIntegrationTest {
         clientRepository.deleteAll();
     }
 
-    private ClientDto saveClient() {
+    private ClientDto saveClientInDB() {
         String last = RandomStringUtils.randomAlphabetic(10);
         String first = RandomStringUtils.randomAlphabetic(8);
         String mid = RandomStringUtils.randomAlphabetic(6);
-        Integer age = 33;
-        List<Account> accounts = Collections.emptyList();
+        Integer age = ThreadLocalRandom.current().nextInt(18, 120);
 
-        Client client = new Client(last, first, mid, age, accounts);
+        Client client = new Client(last, first, mid, age);
         log.debug("client: " + client);
 
         Client savedClient = clientRepository.save(client);
@@ -66,11 +65,26 @@ public class ClientControllerRestTemplateIntegrationTest {
         return savedClientDto;
     }
 
+    private ClientDto createClient() {
+        String last = RandomStringUtils.randomAlphabetic(10);
+        String first = RandomStringUtils.randomAlphabetic(8);
+        String mid = RandomStringUtils.randomAlphabetic(6);
+        Integer age = ThreadLocalRandom.current().nextInt(18, 120);
+
+        Client client = new Client(last, first, mid, age);
+        log.debug("client: " + client);
+
+        ClientDto clientDto = ClientDto.valueOf(client);
+        log.debug("clientDto: " + clientDto);
+
+        return clientDto;
+    }
+
     @Test
     @DisplayName("[TestRestTemplate] Успешный поиск всех клиентов")
     public void findAllSuccess() {
-        ClientDto saved1 = saveClient();
-        ClientDto saved2 = saveClient();
+        ClientDto saved1 = saveClientInDB();
+        ClientDto saved2 = saveClientInDB();
 
         String url = "http://localhost:" + port + BASE_URL;
         log.debug("url: " + url);
@@ -110,7 +124,7 @@ public class ClientControllerRestTemplateIntegrationTest {
     @Test
     @DisplayName("[TestRestTemplate] Успешный поиск клиента по id")
     public void findByIdSuccess() {
-        ClientDto saved = saveClient();
+        ClientDto saved = saveClientInDB();
 
         String url = "http://localhost:" + port + BASE_URL + "/" + saved.getId();
         log.debug("url: " + url);
@@ -144,16 +158,9 @@ public class ClientControllerRestTemplateIntegrationTest {
     }
 
     @Test
-    @DisplayName("[TestRestTemplate] Успешное добавление клиента")
+    @DisplayName("[TestRestTemplate] Успешное добавление клиента без счёта")
     public void saveSuccess() {
-        String last = RandomStringUtils.randomAlphabetic(10);
-        String first = RandomStringUtils.randomAlphabetic(8);
-        String mid = RandomStringUtils.randomAlphabetic(6);
-        Integer age = 44;
-        List<Account> accounts = Collections.emptyList();
-        Client client = new Client(last, first, mid, age, accounts);
-        ClientDto clientDto = ClientDto.valueOf(client);
-        log.debug("clientDto: " + clientDto);
+        ClientDto clientDto = createClient();
 
         String url = "http://localhost:" + port + BASE_URL;
         log.debug("url: " + url);
@@ -177,7 +184,7 @@ public class ClientControllerRestTemplateIntegrationTest {
     @Test
     @DisplayName("[TestRestTemplate] Успешное обновление клиента")
     public void updateSuccess() {
-        Long id = saveClient().getId();
+        Long id = saveClientInDB().getId();
 
         ClientDto newClientDto = new ClientDto("New_last", "New_first", "New_mid", 55);
         log.debug("newClientDto: " + newClientDto);
@@ -185,19 +192,19 @@ public class ClientControllerRestTemplateIntegrationTest {
         String url = "http://localhost:" + port + BASE_URL + "/" + id;
         log.debug("url: " + url);
 
-        HttpEntity<ClientDto> entity = new HttpEntity<>(newClientDto);
-
-        ResponseEntity<ClientDto> actual = testRestTemplate.exchange(url, HttpMethod.PUT, entity, ClientDto.class, id);
+        HttpEntity<ClientDto> httpEntity = new HttpEntity<>(newClientDto);
+        ResponseEntity<ClientDto> actual = testRestTemplate.exchange(url, HttpMethod.PUT, httpEntity, ClientDto.class, id);
         log.debug("actual: " + actual);
 
         assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(actual.getBody()).isNull();
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
     }
 
     @Test
     @DisplayName("[TestRestTemplate] Успешное удаление клиента")
     public void deleteSuccess() {
-        Long id = saveClient().getId();
+        Long id = saveClientInDB().getId();
 
         String url = "http://localhost:" + port + BASE_URL + "/" + id;
         log.debug("url: " + url);
@@ -207,5 +214,6 @@ public class ClientControllerRestTemplateIntegrationTest {
 
         assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         assertThat(actual.getBody()).isNull();
+        assertThat(clientRepository.findAll().size()).isEqualTo(0);
     }
 }
