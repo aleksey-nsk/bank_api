@@ -1,3 +1,6 @@
+// import {HttpParams} from '@angular/common/http';
+
+
 // $scope - хранит всё, до чего можно достучаться в html-е;
 // $http - через неё можно делать запросы на бэкенд
 angular.module('app', []).controller('indexController', function ($scope, $http) {
@@ -74,15 +77,25 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
                 });
     };
 
-    // $scope.changePrice = function (product, new_price) {
-    //     product.price = new_price;
-    //     console.log(product)
-    //     $http.put(contextPath + '/product/' + product.id, product)
-    //             .then(function (resp) {
-    //                 console.log(resp);
-    //                 $scope.fillTable()
-    //             });
-    // };
+    $scope.addBalance = function (number, add) {
+        console.log("METHOD addBalance()");
+        console.log(number);
+        console.log(add);
+
+        //const params = new HttpParams()
+        //                     .set('param1', param1Value)
+        //                     .set('param2', param2Value);
+        //     return this.httpClient.put(`my-url-http`, userObj, { params } )
+        // const params = new HttpParams().set('number', number).set('add', add);
+
+
+        const url = contextPath + '/api/v1/client/' + 1 + '/account/card?number=' + number + '&add=' + add;
+        $http.put(url)
+                .then(function (resp) {
+                    console.log(resp);
+                    $scope.fillPage(1);
+                });
+    };
 
     $scope.fillPage(1);
 
