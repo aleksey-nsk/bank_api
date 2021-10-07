@@ -50,8 +50,11 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
         let searchNumber = $scope.NewAccount;
         console.log(searchNumber);
         //const found = x.find(entry => entry.id == 1002);
-        let account = $scope.Accounts.find(entry => entry.number == 55555666667777788888);
-        // console.log(account);
+
+        // let account = $scope.Accounts.find(entry => entry.number == 55555666667777788888); // OK
+        // let account = $scope.Accounts.find(entry => entry.number === '55555666667777788888'); // OK
+        let account = $scope.Accounts.find(entry => entry.number == searchNumber.number);
+        console.log(account);
         console.log(account.id);
 
         console.log($scope.NewCard);
