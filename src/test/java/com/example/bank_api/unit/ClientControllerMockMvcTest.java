@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -46,10 +47,9 @@ public class ClientControllerMockMvcTest {
         String last = RandomStringUtils.randomAlphabetic(10);
         String first = RandomStringUtils.randomAlphabetic(8);
         String mid = RandomStringUtils.randomAlphabetic(6);
-        Integer age = 41;
-        List<Account> accounts = Collections.emptyList();
+        Integer age = ThreadLocalRandom.current().nextInt(18, 120);
 
-        Client client = new Client(id, last, first, mid, age, accounts);
+        Client client = new Client(id, last, first, mid, age, Collections.emptyList());
         log.debug("client: " + client);
 
         ClientDto clientDto = ClientDto.valueOf(client);
@@ -112,33 +112,33 @@ public class ClientControllerMockMvcTest {
     }
 
     @Test
-    @DisplayName("[Controller] Успешное добавление клиента")
+    @DisplayName("[Controller] Успешное добавление клиента без счетов")
     public void saveSuccess() throws Exception {
         Long id = 1L;
-        String last = RandomStringUtils.randomAlphabetic(10);
-        String first = RandomStringUtils.randomAlphabetic(8);
-        String mid = RandomStringUtils.randomAlphabetic(6);
-        Integer age = 41;
+        String last = "Last";
+        String first = "First";
+        String mid = "Mid";
+        Integer age = 44;
         List<Account> accounts = Collections.emptyList();
 
-        ClientDto clientDto = new ClientDto(last, first, mid, age, accounts);
+        ClientDto client = new ClientDto(last, first, mid, age, accounts);
         ClientDto saved = new ClientDto(id, last, first, mid, age, accounts);
-        log.debug("clientDto: " + clientDto);
+        log.debug("client: " + client);
         log.debug("saved: " + saved);
 
-        String clientDtoJson = objectMapper.writeValueAsString(clientDto);
+        String clientJson = objectMapper.writeValueAsString(client);
         String savedJson = objectMapper.writeValueAsString(saved);
-        log.debug("clientDtoJson: " + clientDtoJson);
+        log.debug("clientJson: " + clientJson);
         log.debug("savedJson: " + savedJson);
 
-        Mockito.when(clientService.save(clientDto))
+        Mockito.when(clientService.save(client))
                 .thenReturn(saved);
 
         mockMvc.perform(
-                post(BASE_URL)
-                        .content(clientDtoJson)
-                        .contentType(APPLICATION_JSON)
-        )
+                        post(BASE_URL)
+                                .content(clientJson)
+                                .contentType(APPLICATION_JSON)
+                )
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().json(savedJson, true));

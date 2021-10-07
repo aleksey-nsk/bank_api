@@ -5,12 +5,15 @@ import com.example.bank_api.dto.CardDto;
 import com.example.bank_api.dto.ClientDto;
 import com.example.bank_api.entity.Account;
 import com.example.bank_api.entity.Client;
+import com.example.bank_api.repository.AccountRepository;
+import com.example.bank_api.repository.CardRepository;
 import com.example.bank_api.repository.ClientRepository;
 import com.example.bank_api.service.AccountService;
 import com.example.bank_api.service.CardService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.RandomStringUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -40,6 +44,12 @@ public class CardControllerMockMvcIntegrationTest {
     private ClientRepository clientRepository;
 
     @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private CardRepository cardRepository;
+
+    @Autowired
     private AccountService accountService;
 
     @Autowired
@@ -50,6 +60,13 @@ public class CardControllerMockMvcIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @BeforeEach
+    void setUp() {
+        cardRepository.deleteAll();
+        accountRepository.deleteAll();
+        clientRepository.deleteAll();
+    }
 
     private ClientDto saveClientInDB() {
         String last = RandomStringUtils.randomAlphabetic(10);
@@ -101,6 +118,10 @@ public class CardControllerMockMvcIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(savedAsJson, true));
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
+        assertThat(accountRepository.findAll().size()).isEqualTo(1);
+        assertThat(cardRepository.findAll().size()).isEqualTo(2);
     }
 
     @Test
@@ -118,6 +139,10 @@ public class CardControllerMockMvcIntegrationTest {
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.number").isString())
                 .andExpect(jsonPath("$.releaseDate").isNotEmpty());
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
+        assertThat(accountRepository.findAll().size()).isEqualTo(1);
+        assertThat(cardRepository.findAll().size()).isEqualTo(1);
     }
 
     @Test
@@ -133,5 +158,9 @@ public class CardControllerMockMvcIntegrationTest {
         mockMvc.perform(delete(url))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
+        assertThat(accountRepository.findAll().size()).isEqualTo(1);
+        assertThat(cardRepository.findAll().size()).isEqualTo(0);
     }
 }

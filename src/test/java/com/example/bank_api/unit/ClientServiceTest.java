@@ -1,7 +1,6 @@
 package com.example.bank_api.unit;
 
 import com.example.bank_api.dto.ClientDto;
-import com.example.bank_api.entity.Account;
 import com.example.bank_api.entity.Client;
 import com.example.bank_api.repository.ClientRepository;
 import com.example.bank_api.service.ClientService;
@@ -20,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 @SpringBootTest(classes = ClientServiceImpl.class)
 @Log4j2
@@ -35,10 +35,9 @@ public class ClientServiceTest {
         String last = RandomStringUtils.randomAlphabetic(10);
         String first = RandomStringUtils.randomAlphabetic(8);
         String mid = RandomStringUtils.randomAlphabetic(6);
-        Integer age = 41;
-        List<Account> accounts = Collections.emptyList();
+        Integer age = ThreadLocalRandom.current().nextInt(18, 120);
 
-        Client client = new Client(id, last, first, mid, age, accounts);
+        Client client = new Client(id, last, first, mid, age, Collections.emptyList());
         log.debug("client: " + client);
 
         ClientDto clientDto = ClientDto.valueOf(client);
@@ -52,15 +51,13 @@ public class ClientServiceTest {
     public void findAllSuccess() {
         ClientDto clientDto1 = createClient(1L);
         ClientDto clientDto2 = createClient(2L);
-
-        Client client1 = clientDto1.mapToClient();
-        Client client2 = clientDto2.mapToClient();
-
         List<ClientDto> clientDtoList = new ArrayList<>();
         clientDtoList.add(clientDto1);
         clientDtoList.add(clientDto2);
         log.debug("clientDtoList: " + clientDtoList);
 
+        Client client1 = clientDto1.mapToClient();
+        Client client2 = clientDto2.mapToClient();
         List<Client> clientList = new ArrayList<>();
         clientList.add(client1);
         clientList.add(client2);
@@ -114,10 +111,10 @@ public class ClientServiceTest {
         Client client = clientDto.mapToClient();
 
         Mockito.when(clientRepository.findByLastnameAndFirstnameAndMiddlename(
-                clientDto.getLastname(),
-                clientDto.getFirstname(),
-                clientDto.getMiddlename())
-        )
+                        clientDto.getLastname(),
+                        clientDto.getFirstname(),
+                        clientDto.getMiddlename())
+                )
                 .thenReturn(null);
 
         Mockito.when(clientRepository.save(client))
@@ -136,10 +133,10 @@ public class ClientServiceTest {
         ClientDto clientDto = createClient(1L);
 
         Mockito.when(clientRepository.findByLastnameAndFirstnameAndMiddlename(
-                clientDto.getLastname(),
-                clientDto.getFirstname(),
-                clientDto.getMiddlename())
-        )
+                        clientDto.getLastname(),
+                        clientDto.getFirstname(),
+                        clientDto.getMiddlename())
+                )
                 .thenReturn(new Client());
 
         ClientDto actual = clientService.save(clientDto);

@@ -13,6 +13,7 @@ import com.example.bank_api.service.CardService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.RandomStringUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -58,6 +60,13 @@ public class AccountControllerMockMvcIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUp() {
+        cardRepository.deleteAll();
+        accountRepository.deleteAll();
+        clientRepository.deleteAll();
+    }
 
     private ClientDto saveClientInDB() {
         String last = RandomStringUtils.randomAlphabetic(10);
@@ -108,6 +117,10 @@ public class AccountControllerMockMvcIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(savedAsJson, true));
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
+        assertThat(accountRepository.findAll().size()).isEqualTo(2);
+        assertThat(cardRepository.findAll().size()).isEqualTo(0);
     }
 
     @Test
@@ -126,6 +139,10 @@ public class AccountControllerMockMvcIntegrationTest {
                 .andExpect(jsonPath("$.openingDate").isNotEmpty())
                 .andExpect(jsonPath("$.balance").value(0))
                 .andExpect(jsonPath("$.cards").isEmpty());
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
+        assertThat(accountRepository.findAll().size()).isEqualTo(1);
+        assertThat(cardRepository.findAll().size()).isEqualTo(0);
     }
 
     @Test
@@ -143,5 +160,9 @@ public class AccountControllerMockMvcIntegrationTest {
         mockMvc.perform(put(url))
                 .andDo(print())
                 .andExpect(status().isOk());
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
+        assertThat(accountRepository.findAll().size()).isEqualTo(1);
+        assertThat(cardRepository.findAll().size()).isEqualTo(1);
     }
 }

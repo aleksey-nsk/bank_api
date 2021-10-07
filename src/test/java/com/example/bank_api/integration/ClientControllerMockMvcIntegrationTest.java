@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -109,6 +110,8 @@ public class ClientControllerMockMvcIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(savedAsJson, true));
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(2);
     }
 
     @Test
@@ -123,6 +126,8 @@ public class ClientControllerMockMvcIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(savedAsJson, true));
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
     }
 
     @Test
@@ -131,6 +136,8 @@ public class ClientControllerMockMvcIntegrationTest {
         mockMvc.perform(get(BASE_URL + "/999"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(0);
     }
 
     @Test
@@ -153,6 +160,8 @@ public class ClientControllerMockMvcIntegrationTest {
                 .andExpect(jsonPath("$.firstname").value(clientDto.getFirstname()))
                 .andExpect(jsonPath("$.middlename").value(clientDto.getMiddlename()))
                 .andExpect(jsonPath("$.age").value(clientDto.getAge()));
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
     }
 
     @Test
@@ -171,6 +180,8 @@ public class ClientControllerMockMvcIntegrationTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
     }
 
     @Test
@@ -181,5 +192,7 @@ public class ClientControllerMockMvcIntegrationTest {
         mockMvc.perform(delete(BASE_URL + "/" + saved.getId()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(0);
     }
 }
