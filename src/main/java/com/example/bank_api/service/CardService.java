@@ -36,4 +36,12 @@ public interface CardService {
      * @return Сохранённая в БД карта
      */
     CardDto save(Long clientId, Long accountId, CardDto cardDto);
+
+    /**
+     * <p>Удаляет карту из БД</p>
+     *
+     * @param clientId Идентификатор клиента
+     * @param cardId   Идентификатор карты
+     */
+    void delete(Long clientId, Long cardId);
 }

@@ -5,6 +5,8 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
+
 @Entity
 @Table(name = "clients")
 @Data
@@ -27,7 +29,7 @@ public class Client {
     @Column(name = "age")
     private Integer age;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "client", cascade = {DETACH, MERGE, PERSIST, REFRESH})
     private List<Account> accounts;
 
     public Client() {

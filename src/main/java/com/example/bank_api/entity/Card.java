@@ -6,6 +6,8 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
 
+import static javax.persistence.CascadeType.*;
+
 @Entity
 @Table(name = "cards")
 @Data
@@ -22,7 +24,7 @@ public class Card {
     @Column(name = "release_date")
     private Date releaseDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {DETACH, MERGE, PERSIST, REFRESH})
     @JoinColumn(name = "account_id")
     private Account account;
 

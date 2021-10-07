@@ -56,4 +56,14 @@ public class CardController {
         }
         return saved;
     }
+
+    @DeleteMapping("/card/{card_id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation(value = "Удалить карту")
+    public void delete(
+            @PathVariable("client_id") Long clientId,
+            @PathVariable("card_id") Long cardId
+    ) {
+        cardService.delete(clientId, cardId);
+    }
 }

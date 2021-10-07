@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
+
 @Entity
 @Table(name = "accounts")
 @Data
@@ -27,10 +29,10 @@ public class Account {
     @Column(name = "balance")
     private BigDecimal balance;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", cascade = {DETACH, MERGE, PERSIST, REFRESH})
     private List<Card> cards;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {DETACH, MERGE, PERSIST, REFRESH})
     @JoinColumn(name = "client_id")
     private Client client;
 

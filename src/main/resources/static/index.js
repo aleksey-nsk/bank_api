@@ -54,7 +54,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
         console.log($scope.NewCard);
         let objectA = {};
         console.log(objectA);
-        const url = contextPath + '/api/v1/client/' + 1 + '/account/' +account.id + '/card';
+        const url = contextPath + '/api/v1/client/' + 1 + '/account/' + account.id + '/card';
         console.log(url);
         $http.post(url, objectA)
                 .then(function (resp) {
@@ -63,12 +63,16 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
                 });
     };
 
-    // $scope.deleteProduct = function (id) {
-    //     $http.delete(contextPath + '/product/' + id)
-    //             .then(function (resp) {
-    //                 $scope.fillTable();
-    //             });
-    // };
+    $scope.deleteCard = function (cardId) {
+        console.log("METHOD deleteCard()");
+        console.log(cardId);
+        const url = contextPath + '/api/v1/client/' + 1 + '/card/' + cardId;
+        $http.delete(url)
+                .then(function (resp) {
+                    console.log(resp);
+                    $scope.fillPage(1);
+                });
+    };
 
     // $scope.changePrice = function (product, new_price) {
     //     product.price = new_price;

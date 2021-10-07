@@ -4,6 +4,7 @@ import com.example.bank_api.dto.AccountDto;
 import com.example.bank_api.dto.CardDto;
 import com.example.bank_api.entity.Card;
 import com.example.bank_api.repository.CardRepository;
+import com.example.bank_api.repository.ClientRepository;
 import com.example.bank_api.service.AccountService;
 import com.example.bank_api.service.CardService;
 import lombok.extern.log4j.Log4j2;
@@ -26,6 +27,9 @@ public class CardServiceImpl implements CardService {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private ClientRepository clientRepository;
 
     @Override
     public List<CardDto> findAll(Long clientId) {
@@ -103,5 +107,18 @@ public class CardServiceImpl implements CardService {
         }
 
         return saved;
+    }
+
+    @Override
+    public void delete(Long clientId, Long cardId) {
+        log.debug("Удалить из БД карту");
+        log.debug("clientId: " + clientId);
+        log.debug("cardId: " + cardId);
+
+        if (clientRepository.findById(clientId).isPresent()) {
+            cardRepository.deleteById(cardId);
+        } else {
+            log.debug("В БД отсутствует клиент с id=" + clientId);
+        }
     }
 }
