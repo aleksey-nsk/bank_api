@@ -1,19 +1,15 @@
-# На каком порту стартует приложение
-server:
-    port: 8082
-
 # Настройки логирования
 logging:
     level:
         com.example.bank_api: debug
     file:
-        name: logs/app_debug.log
+        name: logs/test_debug.log
 
 # Настройки БД
 spring:
     datasource:
         driver-class-name: org.h2.Driver
-        url: jdbc:h2:mem:bank;MODE=PostgreSQL
+        url: jdbc:h2:mem:bank_test;MODE=PostgreSQL
         username: sa
         password:
     jpa:
@@ -21,8 +17,5 @@ spring:
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.H2Dialect
-    h2:
-        console:
-            enabled: true # web-консоль по адресу: /h2-console
-            settings:
-                web-allow-others: false
+    flyway:
+        enabled: false # отключить Flyway-миграции для тестов
