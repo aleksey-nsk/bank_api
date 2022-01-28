@@ -21,8 +21,3 @@ spring:
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.PostgreSQLDialect
-    h2:
-        console:
-            enabled: true # web-консоль по адресу: /h2-console
-            settings:
-                web-allow-others: false
