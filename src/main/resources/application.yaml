@@ -12,15 +12,15 @@ logging:
 # Настройки БД
 spring:
     datasource:
-        driver-class-name: org.h2.Driver
-        url: jdbc:h2:mem:bank;MODE=PostgreSQL
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://localhost:15432/postgres
         username: sa
-        password:
+        password: 12345
     jpa:
         show-sql: false
         properties:
             hibernate:
-                dialect: org.hibernate.dialect.H2Dialect
+                dialect: org.hibernate.dialect.PostgreSQLDialect
     h2:
         console:
             enabled: true # web-консоль по адресу: /h2-console

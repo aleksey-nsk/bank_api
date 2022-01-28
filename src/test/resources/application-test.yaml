@@ -8,14 +8,14 @@ logging:
 # Настройки БД
 spring:
     datasource:
-        driver-class-name: org.h2.Driver
-        url: jdbc:h2:mem:bank_test;MODE=PostgreSQL
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://localhost:6000/postgres
         username: sa
-        password:
+        password: 123
     jpa:
         show-sql: false
         properties:
             hibernate:
-                dialect: org.hibernate.dialect.H2Dialect
+                dialect: org.hibernate.dialect.PostgreSQLDialect
     flyway:
         enabled: false # отключить Flyway-миграции для тестов
