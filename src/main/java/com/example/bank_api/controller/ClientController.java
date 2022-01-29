@@ -16,8 +16,12 @@ import java.util.List;
 @Api(description = "Контроллер для клиентов")
 public class ClientController {
 
+    private final ClientService clientService;
+
     @Autowired
-    private ClientService clientService;
+    public ClientController(ClientService clientService) {
+        this.clientService = clientService;
+    }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
