@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
-    Client findByLastnameAndFirstnameAndMiddlename(String lastname, String firstname, String middlename);
-
-    @Query("UPDATE Client SET lastname = :l, firstname = :f, middlename = :m, age = :age WHERE id = :id")
-    @Modifying
-    void updateNameAndAge(Long id, String l, String f, String m, Integer age);
+//    Client findByLastnameAndFirstnameAndMiddlename(String lastname, String firstname, String middlename);
+//
+//    @Query("UPDATE Client SET lastname = :l, firstname = :f, middlename = :m, age = :age WHERE id = :id")
+//    @Modifying
+//    void updateNameAndAge(Long id, String l, String f, String m, Integer age);
 }

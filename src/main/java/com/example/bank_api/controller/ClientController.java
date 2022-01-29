@@ -1,6 +1,8 @@
 package com.example.bank_api.controller;
 
 import com.example.bank_api.dto.ClientDto;
+import com.example.bank_api.exception.ClientNotFoundException;
+import com.example.bank_api.repository.ClientRepository;
 import com.example.bank_api.service.ClientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -24,48 +28,55 @@ public class ClientController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
+//    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Получить всех клиентов")
     public List<ClientDto> findAll() {
         return clientService.findAll();
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
+//    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Получить клиента по id")
     public ClientDto findById(@PathVariable("id") Long id) {
-        ClientDto clientDto = clientService.findById(id);
-        if (clientDto == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return clientDto;
+//        ClientDto clientDto = clientService.findById(id);
+//        if (clientDto == null) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        }
+//        return clientDto;
+
+        return clientService.findById(id);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
+//    @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Добавить клиента")
     public ClientDto save(@RequestBody ClientDto clientDto) {
-        ClientDto saved = clientService.save(clientDto);
-        if (saved == null) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-        return saved;
+//        ClientDto saved = clientService.save(clientDto);
+//        if (saved == null) {
+//            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+//        }
+//        return saved;
+
+        return clientService.save(clientDto);
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
+//    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Обновить клиента")
-    public void update(@PathVariable("id") Long id, @RequestBody ClientDto clientDto) {
+    public boolean update(@PathVariable("id") Long id, @RequestBody ClientDto clientDto) {
+//        boolean updated = clientService.update(id, clientDto);
+//        if (updated == false) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        }
+
         boolean updated = clientService.update(id, clientDto);
-        if (updated == false) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        return updated;
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiOperation(value = "Удалить клиента")
-    public void delete(@PathVariable("id") Long id) {
-        clientService.delete(id);
-    }
+//    @DeleteMapping("/{id}")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    @ApiOperation(value = "Удалить клиента")
+//    public void delete(@PathVariable("id") Long id) {
+//        clientService.delete(id);
+//    }
 }

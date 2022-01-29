@@ -42,10 +42,10 @@ public interface ClientService {
      */
     boolean update(Long id, ClientDto clientDto);
 
-    /**
-     * <p>Удаляет клиента из БД</p>
-     *
-     * @param id Идентификатор клиента
-     */
-    void delete(Long id);
+//    /**
+//     * <p>Удаляет клиента из БД</p>
+//     *
+//     * @param id Идентификатор клиента
+//     */
+//    void delete(Long id);
 }
