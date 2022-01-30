@@ -2,8 +2,6 @@ package com.example.bank_api.controller;
 
 import com.example.bank_api.dto.ClientDto;
 import com.example.bank_api.service.ClientService;
-//import io.swagger.annotations.Api;
-//import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

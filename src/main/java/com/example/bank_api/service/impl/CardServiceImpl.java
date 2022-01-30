@@ -68,7 +68,7 @@ public class CardServiceImpl implements CardService {
                 .stream()
                 .filter(it -> it.getId().equals(accountId))
                 .findFirst()
-                .orElseThrow(() -> new AccountNotFoundException(accountId));
+                .orElseThrow(() -> new AccountNotFoundException("тут какая то ошибка !!!!!!!!!!!"));
         log.debug("По clientId=" + clientId + " и accountId=" + accountId + " получен счёт: " + account);
 
         String number = RandomStringUtils.randomNumeric(16); // случайный 16-значный номер карты
@@ -109,7 +109,7 @@ public class CardServiceImpl implements CardService {
         Card card = finalListCards.stream()
                 .filter(it -> it.getId().equals(cardId))
                 .findFirst()
-                .orElseThrow(() -> new CardNotFoundException(cardId));
+                .orElseThrow(() -> new CardNotFoundException("какая то ошибка !!!!!!!!!!!"));
 
         // У клиента с id=111 отсутствует карта с id=2222
 

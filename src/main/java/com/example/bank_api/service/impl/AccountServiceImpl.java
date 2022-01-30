@@ -59,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
                 .filter(it -> it.getId().equals(accountId))
                 .map(it -> AccountDto.valueOf(it))
                 .findFirst()
-                .orElseThrow(() -> new AccountNotFoundException(accountId));
+                .orElseThrow(() -> new AccountNotFoundException("У клиента с id=" + clientId + " отсутствует счёт с id=" + accountId));
 
         // У клиента с id=111 отсутствует счёт с id=2222
 

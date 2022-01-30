@@ -11,7 +11,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     Client findByLastnameAndFirstnameAndMiddlename(String lastname, String firstname, String middlename);
 
-    // С помощью @Query можно не только читать, но и обновлять базу (update, delete).
+    // С помощью @Query можно не только читать, но и ОБНОВЛЯТЬ базу (UPDATE, DELETE).
     // Но в таких запросах необходима дополнительная к @Query аннотация @Modifying
     @Query("UPDATE Client SET lastname = :l, firstname = :f, middlename = :m, age = :age WHERE id = :id")
     @Modifying

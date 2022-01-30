@@ -8,8 +8,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import static javax.persistence.CascadeType.*;
-
 @Entity
 @Table(name = "accounts")
 @Data
@@ -29,10 +27,10 @@ public class Account {
     @Column(name = "balance")
     private BigDecimal balance;
 
-    @OneToMany(mappedBy = "account", cascade = {DETACH, MERGE, PERSIST, REFRESH})
+    @OneToMany(mappedBy = "account")
     private List<Card> cards;
 
-    @ManyToOne(cascade = {DETACH, MERGE, PERSIST, REFRESH})
+    @ManyToOne()
     @JoinColumn(name = "client_id")
     private Client client;
 
@@ -54,13 +52,13 @@ public class Account {
         this.cards = cards;
     }
 
-    // Игнорировать client в JSON иначе будет ошибка: Infinite recursion (StackOverflowError)
+    // Игнорировать client в JSON иначе будет ошибка: "Infinite recursion (StackOverflowError)"
     @JsonIgnore
     public Client getClient() {
         return client;
     }
 
-    // Не выводить поле client иначе будет ошибка: StackOverflowError
+    // Не выводить поле client иначе будет ошибка: "StackOverflowError"
     @Override
     public String toString() {
         return "Account{" +
