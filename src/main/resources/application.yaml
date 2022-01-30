@@ -7,7 +7,7 @@ logging:
     level:
         com.example.bank_api: debug
     file:
-        name: logs/app_debug.log
+        name: logs/app.log
 
 # Настройки БД
 spring:

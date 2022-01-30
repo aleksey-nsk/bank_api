@@ -22,7 +22,7 @@ public class Card {
     @Column(name = "release_date")
     private Date releaseDate;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
 

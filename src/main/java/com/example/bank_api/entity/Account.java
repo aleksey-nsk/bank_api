@@ -27,12 +27,12 @@ public class Account {
     @Column(name = "balance")
     private BigDecimal balance;
 
-    @OneToMany(mappedBy = "account")
-    private List<Card> cards;
-
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    private List<Card> cards;
 
     public Account() {
     }

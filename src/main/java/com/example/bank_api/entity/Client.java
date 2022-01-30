@@ -1,6 +1,8 @@
 package com.example.bank_api.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
@@ -8,6 +10,8 @@ import java.util.List;
 @Entity
 @Table(name = "clients")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Client {
 
     @Id
@@ -27,14 +31,10 @@ public class Client {
     @Column(name = "age")
     private Integer age;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private List<Account> accounts;
 
-    public Client() {
-    }
-
-    public Client(Long id, String lastname, String firstname, String middlename, Integer age, List<Account> accounts) {
-        this.id = id;
+    public Client(String lastname, String firstname, String middlename, Integer age, List<Account> accounts) {
         this.lastname = lastname;
         this.firstname = firstname;
         this.middlename = middlename;

@@ -30,7 +30,7 @@
 //
 //@WebMvcTest(controllers = ClientController.class)
 //@Log4j2
-//public class ClientControllerMockMvcTest {
+//public class ClientControllerTest {
 //
 //    private static final String BASE_URL = "/api/v1/client";
 //
