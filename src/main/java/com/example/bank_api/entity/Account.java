@@ -39,6 +39,13 @@ public class Account {
     public Account() {
     }
 
+    public Account(String number, Date openingDate, BigDecimal balance, List<Card> cards) {
+        this.number = number;
+        this.openingDate = openingDate;
+        this.balance = balance;
+        this.cards = cards;
+    }
+
     public Account(Long id, String number, Date openingDate, BigDecimal balance, List<Card> cards) {
         this.id = id;
         this.number = number;
@@ -47,18 +54,13 @@ public class Account {
         this.cards = cards;
     }
 
-    public Account(String number, Date openingDate, BigDecimal balance, List<Card> cards) {
-        this.number = number;
-        this.openingDate = openingDate;
-        this.balance = balance;
-        this.cards = cards;
-    }
-
+    // Игнорировать client в JSON иначе будет ошибка: Infinite recursion (StackOverflowError)
     @JsonIgnore
     public Client getClient() {
         return client;
     }
 
+    // Не выводить поле client иначе будет ошибка: StackOverflowError
     @Override
     public String toString() {
         return "Account{" +

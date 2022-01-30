@@ -38,14 +38,13 @@ public interface ClientService {
      *
      * @param id        Идентификатор клиента
      * @param clientDto Данные клиента для обновления
-     * @return <b>true</b> если клиент найден и обновлён, <b>false</b> если не обновлён
      */
-    boolean update(Long id, ClientDto clientDto);
+    void update(Long id, ClientDto clientDto);
 
-//    /**
-//     * <p>Удаляет клиента из БД</p>
-//     *
-//     * @param id Идентификатор клиента
-//     */
-//    void delete(Long id);
+    /**
+     * <p>Удаляет клиента из БД</p>
+     *
+     * @param id Идентификатор клиента
+     */
+    void delete(Long id);
 }

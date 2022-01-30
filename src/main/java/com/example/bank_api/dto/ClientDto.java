@@ -28,21 +28,6 @@ public class ClientDto {
         this.accounts = accounts;
     }
 
-    public ClientDto(String lastname, String firstname, String middlename, Integer age, List<Account> accounts) {
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.middlename = middlename;
-        this.age = age;
-        this.accounts = accounts;
-    }
-
-    public ClientDto(String lastname, String firstname, String middlename, Integer age) {
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.middlename = middlename;
-        this.age = age;
-    }
-
     public static ClientDto valueOf(Client client) {
         return new ClientDto(
                 client.getId(),
@@ -56,17 +41,5 @@ public class ClientDto {
 
     public Client mapToClient() {
         return new Client(id, lastname, firstname, middlename, age, accounts);
-    }
-
-    @Override
-    public String toString() {
-        return "ClientDto{" +
-                "id=" + id +
-                ", lastname='" + lastname + '\'' +
-                ", firstname='" + firstname + '\'' +
-                ", middlename='" + middlename + '\'' +
-                ", age=" + age +
-                ", accounts=" + accounts +
-                '}';
     }
 }

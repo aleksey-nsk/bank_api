@@ -43,31 +43,4 @@ public class Client {
         this.age = age;
         this.accounts = accounts;
     }
-
-    public Client(String lastname, String firstname, String middlename, Integer age, List<Account> accounts) {
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.middlename = middlename;
-        this.age = age;
-        this.accounts = accounts;
-    }
-
-    public Client(String lastname, String firstname, String middlename, Integer age) {
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.middlename = middlename;
-        this.age = age;
-    }
-
-    @Override
-    public String toString() {
-        return "Client{" +
-                "id=" + id +
-                ", lastname='" + lastname + '\'' +
-                ", firstname='" + firstname + '\'' +
-                ", middlename='" + middlename + '\'' +
-                ", age=" + age +
-                ", accounts=" + accounts +
-                '}';
-    }
 }
