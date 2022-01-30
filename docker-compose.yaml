@@ -10,12 +10,3 @@ services:
         environment:
             - 'POSTGRES_USER=sa'
             - 'POSTGRES_PASSWORD=12345'
-
-    db_test:
-        image: 'postgres:13'
-        container_name: 'bank_api_db_test'
-        ports:
-            - 6000:5432
-        environment:
-            - 'POSTGRES_USER=sa'
-            - 'POSTGRES_PASSWORD=123'
