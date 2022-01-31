@@ -9,8 +9,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@ActiveProfiles("test")
 @Log4j2
+@ActiveProfiles("test") // активирую тестовый профиль
 public class SpringProfileTest {
 
     @Autowired

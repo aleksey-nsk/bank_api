@@ -28,15 +28,23 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = ClientServiceImpl.class) // контекст поднимется только с 1 классом
+// Опять ставим аннотацию @SpringBootTest,
+// но теперь уже указываем в скобках classes.
+//
+// @SpringBootTest(classes = ClientServiceImpl.class) => в этом случае
+// при запуске теста КОНТЕКСТ ПОДНИМЕТСЯ ТОЛЬКО С 1 КЛАССОМ.
+//
+// classes - это массив (можно несколько добавить).
+
+@SpringBootTest(classes = ClientServiceImpl.class)
 @Log4j2
 @ActiveProfiles("test")
-public class ClientServiceTest {
+public class ClientServiceUnitTest {
 
     @Autowired
     private ClientService clientService;
 
-    // Замокать бин
+    // Нужный бин можно ЗАМОКАТЬ
     @MockBean
     private ClientRepository clientRepository;
 
@@ -46,24 +54,24 @@ public class ClientServiceTest {
     @MockBean
     private CardRepository cardRepository;
 
-    private ClientDto createClient(Long id) {
+    private Client createClient(Long id) {
         String last = RandomStringUtils.randomAlphabetic(10);
         String first = RandomStringUtils.randomAlphabetic(8);
         String mid = RandomStringUtils.randomAlphabetic(6);
         Integer age = ThreadLocalRandom.current().nextInt(18, 120);
         List<Account> accounts = Collections.emptyList();
 
-        ClientDto clientDto = new ClientDto(id, last, first, mid, age, accounts);
-        log.debug("clientDto: " + clientDto);
+        Client client = new Client(id, last, first, mid, age, accounts);
+        log.debug("client: " + client);
 
-        return clientDto;
+        return client;
     }
 
     @Test
     @DisplayName("Успешный поиск всех клиентов")
     public void findAllSuccess() {
-        ClientDto clientDto1 = createClient(1L);
-        ClientDto clientDto2 = createClient(2L);
+        ClientDto clientDto1 = ClientDto.valueOf(createClient(1L));
+        ClientDto clientDto2 = ClientDto.valueOf(createClient(2L));
         List<ClientDto> clientDtoList = new ArrayList<>();
         clientDtoList.add(clientDto1);
         clientDtoList.add(clientDto2);
@@ -76,10 +84,14 @@ public class ClientServiceTest {
         clientList.add(client2);
         log.debug("clientList: " + clientList);
 
-        // Определить поведение замоканного бина
+        // Далее надо определить поведение ЗАМОКАННОГО БИНА
+        // (сейчас он просто возвращает null на любой вызов).
+        //
+        // Spring Boot имеет встроенную зависимость
+        // для библиотеки Mockito
         Mockito
                 .doReturn(clientList) // вернуть clientList
-                .when(clientRepository).findAll(); // когда у замоканного объекта вызывается метод findAll()
+                .when(clientRepository).findAll(); // когда у ЗАМОКАННОГО ОБЪЕКТА вызывается метод findAll()
 
         List<ClientDto> actual = clientService.findAll();
         log.debug("actual: " + actual);
@@ -92,7 +104,7 @@ public class ClientServiceTest {
     @DisplayName("Успешный поиск клиента по id")
     public void findByIdSuccess() {
         Long id = 1L;
-        ClientDto clientDto = createClient(id);
+        ClientDto clientDto = ClientDto.valueOf(createClient(id));
         Client client = clientDto.mapToClient();
 
         Mockito.doReturn(Optional.of(client))
@@ -123,7 +135,7 @@ public class ClientServiceTest {
     @Test
     @DisplayName("Успешное добавление клиента без счетов")
     public void saveSuccess() {
-        ClientDto clientDto = createClient(1L);
+        ClientDto clientDto = ClientDto.valueOf(createClient(1L));
 
         Client client = clientDto.mapToClient();
         String last = client.getLastname();
@@ -145,7 +157,7 @@ public class ClientServiceTest {
     @Test
     @DisplayName("Дубликат клиента по ФИО не добавлен")
     public void saveFail() {
-        ClientDto clientDto = createClient(1L);
+        ClientDto clientDto = ClientDto.valueOf(createClient(1L));
 
         Client client = clientDto.mapToClient();
         String last = client.getLastname();
@@ -168,7 +180,7 @@ public class ClientServiceTest {
     @DisplayName("Клиент для обновления не найден")
     public void updateFail() {
         Long id = 1L;
-        ClientDto clientDto = createClient(id);
+        ClientDto clientDto = ClientDto.valueOf(createClient(id));
 
         try {
             clientService.update(id, clientDto);

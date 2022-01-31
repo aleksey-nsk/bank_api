@@ -29,15 +29,37 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+// Неудобный способ запросов Spring обернул в Spring MockMvc.
+// MockMvc можно использовать и для ИНТЕГРАЦИОННЫХ и для ЮНИТ-ТЕСТОВ.
+//
+// Теперь уже не надо указывать ХОСТ и ПОРТ,
+// потому что мы всё делаем в ЗАМОКАННОМ КОНТЕКСТЕ.
+//
+// Для интеграционных тестов используем аннотации @SpringBootTest и @AutoConfigureMockMvc.
+// Аннотация @AutoConfigureMockMvc нужна для того, чтобы появилась возможность ВНЕДРИТЬ
+// в тестовый класс БИН MockMvc.
+//
+// С TestRestTemplate мы по-настоящему запускали сервер,
+// тогда как с MockMvc - нет.
+//
+// При помощи MockMvc можем КИДАТЬ ЗАПРОСЫ В НАШ КОНТРОЛЛЕР.
+// Класс MockMvc предназначен для тестирования контроллеров.
+// Он позволяет тестировать контроллеры БЕЗ ЗАПУСКА HTTP-СЕРВЕРА
+// (т.е. при выполнении тестов сетевое соединение не создаётся).
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Log4j2
 @ActiveProfiles("test")
-public class ClientControllerTest {
+public class ClientControllerIntegrationTest {
 
+    // Благодаря аннотации @AutoConfigureMockMvc могу
+    // добавить специальный бин MockMvc в наш контекст
     @Autowired
     private MockMvc mockMvc;
 
+    // ObjectMapper - этот класс преобразует объект в JSON-строку
+    // (он нужен т.к. мы тестим REST API, а MockMvc самостоятельно это преобразование не делает)
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -59,7 +81,7 @@ public class ClientControllerTest {
         clientRepository.deleteAll();
     }
 
-    private ClientDto saveClientInDB() {
+    private Client saveClientInDB() {
         String last = RandomStringUtils.randomAlphabetic(10);
         String first = RandomStringUtils.randomAlphabetic(8);
         String mid = RandomStringUtils.randomAlphabetic(6);
@@ -72,30 +94,27 @@ public class ClientControllerTest {
         Client savedClient = clientRepository.save(client);
         log.debug("savedClient: " + savedClient);
 
-        ClientDto savedClientDto = ClientDto.valueOf(savedClient);
-        log.debug("savedClientDto: " + savedClientDto);
-
-        return savedClientDto;
+        return savedClient;
     }
 
-    private ClientDto createClient() {
+    private Client createClient() {
         String last = RandomStringUtils.randomAlphabetic(10);
         String first = RandomStringUtils.randomAlphabetic(8);
         String mid = RandomStringUtils.randomAlphabetic(6);
         Integer age = ThreadLocalRandom.current().nextInt(18, 120);
         List<Account> accounts = Collections.emptyList();
 
-        ClientDto clientDto = new ClientDto(last, first, mid, age, accounts);
-        log.debug("clientDto: " + clientDto);
+        Client client = new Client(last, first, mid, age, accounts);
+        log.debug("client: " + client);
 
-        return clientDto;
+        return client;
     }
 
     @Test
     @DisplayName("Успешный поиск всех клиентов")
     public void findAllSuccess() throws Exception {
-        ClientDto saved1 = saveClientInDB();
-        ClientDto saved2 = saveClientInDB();
+        ClientDto saved1 = ClientDto.valueOf(saveClientInDB());
+        ClientDto saved2 = ClientDto.valueOf(saveClientInDB());
 
         List<ClientDto> list = new ArrayList<>();
         list.add(saved1);
@@ -114,7 +133,7 @@ public class ClientControllerTest {
     @Test
     @DisplayName("Успешный поиск клиента по id")
     public void findByIdSuccess() throws Exception {
-        ClientDto saved = saveClientInDB();
+        ClientDto saved = ClientDto.valueOf(saveClientInDB());
 
         String savedAsJson = objectMapper.writeValueAsString(saved);
         log.debug("savedAsJson: " + savedAsJson);
@@ -136,7 +155,7 @@ public class ClientControllerTest {
     @Test
     @DisplayName("Успешное добавление клиента без счетов")
     public void saveSuccess() throws Exception {
-        ClientDto clientDto = createClient();
+        ClientDto clientDto = ClientDto.valueOf(createClient());
 
         String clientDtoAsJson = objectMapper.writeValueAsString(clientDto);
         log.debug("clientDtoAsJson: " + clientDtoAsJson);
@@ -158,7 +177,7 @@ public class ClientControllerTest {
     @Test
     @DisplayName("Дубликат клиента по ФИО в БД не добавлен")
     public void saveFail() throws Exception {
-        ClientDto saved = saveClientInDB();
+        ClientDto saved = ClientDto.valueOf(saveClientInDB());
 
         // Создаём дубликат по ФИО
         Client duplicate = new Client(
@@ -187,7 +206,7 @@ public class ClientControllerTest {
     @DisplayName("Успешное обновление клиента")
     public void updateSuccess() throws Exception {
         Long id = saveClientInDB().getId();
-        ClientDto updateDto = createClient();
+        ClientDto updateDto = ClientDto.valueOf(createClient());
 
         String updateAsJson = objectMapper.writeValueAsString(updateDto);
         log.debug("updateAsJson: " + updateAsJson);
@@ -213,7 +232,7 @@ public class ClientControllerTest {
     @DisplayName("Клиент для обновления не найден")
     public void updateFail() throws Exception {
         Long id = 1L;
-        ClientDto updateDto = createClient();
+        ClientDto updateDto = ClientDto.valueOf(createClient());
 
         String updateAsJson = objectMapper.writeValueAsString(updateDto);
         log.debug("updateAsJson: " + updateAsJson);

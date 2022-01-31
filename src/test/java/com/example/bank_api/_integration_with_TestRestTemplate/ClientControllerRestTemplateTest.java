@@ -29,11 +29,22 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+// Чтобы запустить тесты через Spring Boot (используя контекст Spring-а)
+// надо написать аннотацию @SpringBootTest.
+//
+// Аннотация @SpringBootTest содержит в себе
+// @ExtendWith, @BootstrapWith (поднимает весь контекст целиком).
+//
+// RANDOM_PORT - значит сервер Tomcat будет запускаться на рандомном порту, независимо от настроек.
+// Чтобы получить порт используем @LocalServerPort.
+
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @Log4j2
 @ActiveProfiles("test")
-public class ClientControllerTest {
+public class ClientControllerRestTemplateTest {
 
+    // Навесил на класс @SpringBootTest => теперь
+    // в классе могу заавтоварить любой бин
     @Autowired
     private ClientRepository clientRepository;
 
@@ -43,20 +54,26 @@ public class ClientControllerTest {
     @Autowired
     private CardRepository cardRepository;
 
+    // Класс TestRestTemplate позволяет писать тесты для REST API.
+    // Здесь мы запускаем вэб-сервер, делаем запросы - всё по-настоящему.
+    // Тестируем контроллеры.
+    // С TestRestTemplate мы по-настоящему запускаем сервер
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+    // Получить порт
     @LocalServerPort
     private String port;
 
     private static final String BASE_URL = "/api/v1/client";
 
+    // Очищаю БД после каждого теста
     @AfterEach
     void tearDown() {
         clientRepository.deleteAll();
     }
 
-    private ClientDto saveClientInDB() {
+    private Client saveClientInDB() {
         String last = RandomStringUtils.randomAlphabetic(10);
         String first = RandomStringUtils.randomAlphabetic(8);
         String mid = RandomStringUtils.randomAlphabetic(6);
@@ -69,30 +86,27 @@ public class ClientControllerTest {
         Client savedClient = clientRepository.save(client);
         log.debug("savedClient: " + savedClient);
 
-        ClientDto savedClientDto = ClientDto.valueOf(savedClient);
-        log.debug("savedClientDto: " + savedClientDto);
-
-        return savedClientDto;
+        return savedClient;
     }
 
-    private ClientDto createClient() {
+    private Client createClient() {
         String last = RandomStringUtils.randomAlphabetic(10);
         String first = RandomStringUtils.randomAlphabetic(8);
         String mid = RandomStringUtils.randomAlphabetic(6);
         Integer age = ThreadLocalRandom.current().nextInt(18, 120);
         List<Account> accounts = Collections.emptyList();
 
-        ClientDto clientDto = new ClientDto(last, first, mid, age, accounts);
-        log.debug("clientDto: " + clientDto);
+        Client client = new Client(last, first, mid, age, accounts);
+        log.debug("client: " + client);
 
-        return clientDto;
+        return client;
     }
 
     @Test
-    @DisplayName("[TestRestTemplate] Успешный поиск всех клиентов")
+    @DisplayName("Успешный поиск всех клиентов")
     public void findAllSuccess() {
-        ClientDto saved1 = saveClientInDB();
-        ClientDto saved2 = saveClientInDB();
+        Client saved1 = saveClientInDB();
+        Client saved2 = saveClientInDB();
 
         String url = "http://localhost:" + port + BASE_URL;
         log.debug("url: " + url);
@@ -130,13 +144,15 @@ public class ClientControllerTest {
     }
 
     @Test
-    @DisplayName("[TestRestTemplate] Успешный поиск клиента по id")
+    @DisplayName("Успешный поиск клиента по id")
     public void findByIdSuccess() {
-        ClientDto saved = saveClientInDB();
+        Client saved = saveClientInDB();
 
         String url = "http://localhost:" + port + BASE_URL + "/" + saved.getId();
         log.debug("url: " + url);
 
+        // testRestTemplate.getForObject() - возвращает ТЕЛО ОТВЕТА (если статус не 200, то кинет ошибку).
+        // testRestTemplate.getForEntity() - возвращает ОБЁРТКУ (есть СТАТУС ОТВЕТА и само ТЕЛО ОТВЕТА)
         ResponseEntity<ClientDto> actual = testRestTemplate.getForEntity(url, ClientDto.class);
         log.debug("actual: " + actual);
 
@@ -155,7 +171,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    @DisplayName("[TestRestTemplate] Клиент по id не найден")
+    @DisplayName("Клиент по id не найден")
     public void findByIdFail() {
         String url = "http://localhost:" + port + BASE_URL + "/1";
         log.debug("url: " + url);
@@ -167,9 +183,11 @@ public class ClientControllerTest {
     }
 
     @Test
-    @DisplayName("[TestRestTemplate] Успешное добавление клиента без счетов")
+    @DisplayName("Успешное добавление клиента без счетов")
     public void saveSuccess() {
-        ClientDto clientDto = createClient();
+        Client client = createClient();
+        ClientDto clientDto = ClientDto.valueOf(client);
+        log.debug("clientDto: " + clientDto);
 
         String url = "http://localhost:" + port + BASE_URL;
         log.debug("url: " + url);
@@ -196,9 +214,9 @@ public class ClientControllerTest {
     }
 
     @Test
-    @DisplayName("[TestRestTemplate] Дубликат клиента по ФИО в БД не добавлен")
+    @DisplayName("Дубликат клиента по ФИО в БД не добавлен")
     public void saveFail() {
-        ClientDto saved = saveClientInDB();
+        Client saved = saveClientInDB();
 
         // Создаём дубликат по ФИО
         Client duplicate = new Client(
@@ -225,10 +243,12 @@ public class ClientControllerTest {
     }
 
     @Test
-    @DisplayName("[TestRestTemplate] Успешное обновление клиента")
+    @DisplayName("Успешное обновление клиента")
     public void updateSuccess() {
         Long id = saveClientInDB().getId();
-        ClientDto updateDto = createClient();
+        Client update = createClient();
+        ClientDto updateDto = ClientDto.valueOf(update);
+        log.debug("updateDto: " + updateDto);
 
         String url = "http://localhost:" + port + BASE_URL + "/" + id;
         log.debug("url: " + url);
@@ -254,10 +274,12 @@ public class ClientControllerTest {
     }
 
     @Test
-    @DisplayName("[TestRestTemplate] Клиент для обновления не найден")
+    @DisplayName("Клиент для обновления не найден")
     public void updateFail() {
         Long id = 1L;
-        ClientDto updateDto = createClient();
+        Client update = createClient();
+        ClientDto updateDto = ClientDto.valueOf(update);
+        log.debug("updateDto: " + updateDto);
 
         String url = "http://localhost:" + port + BASE_URL + "/" + id;
         log.debug("url: " + url);
@@ -274,7 +296,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    @DisplayName("[TestRestTemplate] Успешное удаление клиента")
+    @DisplayName("Успешное удаление клиента")
     public void deleteSuccess() {
         Long id = saveClientInDB().getId();
 
@@ -293,7 +315,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    @DisplayName("[TestRestTemplate] Клиент для удаления не найден")
+    @DisplayName("Клиент для удаления не найден")
     public void deleteFail() {
         Long id = 1L;
 
