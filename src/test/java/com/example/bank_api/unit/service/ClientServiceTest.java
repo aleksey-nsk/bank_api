@@ -46,35 +46,35 @@ public class ClientServiceTest {
     @MockBean
     private CardRepository cardRepository;
 
-    private Client createClient(Long id) {
+    private ClientDto createClient(Long id) {
         String last = RandomStringUtils.randomAlphabetic(10);
         String first = RandomStringUtils.randomAlphabetic(8);
         String mid = RandomStringUtils.randomAlphabetic(6);
         Integer age = ThreadLocalRandom.current().nextInt(18, 120);
         List<Account> accounts = Collections.emptyList();
 
-        Client client = new Client(id, last, first, mid, age, accounts);
-        log.debug("client: " + client);
+        ClientDto clientDto = new ClientDto(id, last, first, mid, age, accounts);
+        log.debug("clientDto: " + clientDto);
 
-        return client;
+        return clientDto;
     }
 
     @Test
     @DisplayName("Успешный поиск всех клиентов")
     public void findAllSuccess() {
-        Client client1 = createClient(1L);
-        Client client2 = createClient(2L);
-        List<Client> clientList = new ArrayList<>();
-        clientList.add(client1);
-        clientList.add(client2);
-        log.debug("clientList: " + clientList);
-
-        ClientDto clientDto1 = ClientDto.valueOf(client1);
-        ClientDto clientDto2 = ClientDto.valueOf(client2);
+        ClientDto clientDto1 = createClient(1L);
+        ClientDto clientDto2 = createClient(2L);
         List<ClientDto> clientDtoList = new ArrayList<>();
         clientDtoList.add(clientDto1);
         clientDtoList.add(clientDto2);
         log.debug("clientDtoList: " + clientDtoList);
+
+        Client client1 = clientDto1.mapToClient();
+        Client client2 = clientDto2.mapToClient();
+        List<Client> clientList = new ArrayList<>();
+        clientList.add(client1);
+        clientList.add(client2);
+        log.debug("clientList: " + clientList);
 
         // Определить поведение замоканного бина
         Mockito
@@ -92,8 +92,8 @@ public class ClientServiceTest {
     @DisplayName("Успешный поиск клиента по id")
     public void findByIdSuccess() {
         Long id = 1L;
-        Client client = createClient(id);
-        ClientDto clientDto = ClientDto.valueOf(client);
+        ClientDto clientDto = createClient(id);
+        Client client = clientDto.mapToClient();
 
         Mockito.doReturn(Optional.of(client))
                 .when(clientRepository).findById(id);
@@ -123,12 +123,12 @@ public class ClientServiceTest {
     @Test
     @DisplayName("Успешное добавление клиента без счетов")
     public void saveSuccess() {
-        Client client = createClient(1L);
+        ClientDto clientDto = createClient(1L);
 
-        ClientDto clientDto = ClientDto.valueOf(client);
-        String last = clientDto.getLastname();
-        String first = clientDto.getFirstname();
-        String mid = clientDto.getMiddlename();
+        Client client = clientDto.mapToClient();
+        String last = client.getLastname();
+        String first = client.getFirstname();
+        String mid = client.getMiddlename();
 
         Mockito.when(clientRepository.findByLastnameAndFirstnameAndMiddlename(last, first, mid))
                 .thenReturn(null);
@@ -145,12 +145,12 @@ public class ClientServiceTest {
     @Test
     @DisplayName("Дубликат клиента по ФИО не добавлен")
     public void saveFail() {
-        Client client = createClient(1L);
+        ClientDto clientDto = createClient(1L);
 
-        ClientDto clientDto = ClientDto.valueOf(client);
-        String last = clientDto.getLastname();
-        String first = clientDto.getFirstname();
-        String mid = clientDto.getMiddlename();
+        Client client = clientDto.mapToClient();
+        String last = client.getLastname();
+        String first = client.getFirstname();
+        String mid = client.getMiddlename();
         String fullName = last + " " + first + " " + mid;
 
         Mockito.when(clientRepository.findByLastnameAndFirstnameAndMiddlename(last, first, mid))
@@ -168,8 +168,7 @@ public class ClientServiceTest {
     @DisplayName("Клиент для обновления не найден")
     public void updateFail() {
         Long id = 1L;
-        Client client = createClient(id);
-        ClientDto clientDto = ClientDto.valueOf(client);
+        ClientDto clientDto = createClient(id);
 
         try {
             clientService.update(id, clientDto);

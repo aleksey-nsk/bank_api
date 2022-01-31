@@ -17,7 +17,7 @@ public class SpringProfileTest {
     private Environment environment;
 
     @Test
-    public void springProfileIsTest() {
+    public void springProfileTest() {
         for (String profileName : environment.getActiveProfiles()) {
             log.debug("Активный профиль: " + profileName);
         }

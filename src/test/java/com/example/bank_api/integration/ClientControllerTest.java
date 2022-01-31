@@ -85,10 +85,7 @@ public class ClientControllerTest {
         Integer age = ThreadLocalRandom.current().nextInt(18, 120);
         List<Account> accounts = Collections.emptyList();
 
-        Client client = new Client(last, first, mid, age, accounts);
-        log.debug("client: " + client);
-
-        ClientDto clientDto = ClientDto.valueOf(client);
+        ClientDto clientDto = new ClientDto(last, first, mid, age, accounts);
         log.debug("clientDto: " + clientDto);
 
         return clientDto;
