@@ -5,6 +5,7 @@
 //import com.example.bank_api.entity.Account;
 //import com.example.bank_api.entity.Client;
 //import com.example.bank_api.service.ClientService;
+//import com.fasterxml.jackson.core.JsonProcessingException;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import lombok.extern.log4j.Log4j2;
 //import org.apache.commons.lang.RandomStringUtils;
@@ -59,7 +60,7 @@
 //    }
 //
 //    @Test
-//    @DisplayName("[Controller] Успешный поиск всех клиентов")
+//    @DisplayName("Успешный поиск всех клиентов")
 //    public void findAllSuccess() throws Exception {
 //        ClientDto created1 = createClient(1L);
 //        ClientDto created2 = createClient(2L);
@@ -81,66 +82,66 @@
 //    }
 //
 //    @Test
-//    @DisplayName("[Controller] Успешный поиск клиента по id")
-//    public void findByIdSuccess() throws Exception {
-//        Long id = 1L;
-//        ClientDto created = createClient(id);
-//
-//        String expectedJson = objectMapper.writeValueAsString(created);
-//        log.debug("expectedJson: " + expectedJson);
-//
-//        Mockito.doReturn(created)
-//                .when(clientService).findById(id);
-//
-//        mockMvc.perform(get(BASE_URL + "/" + id))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(content().json(expectedJson, true));
+//    @DisplayName("Успешный поиск клиента по id")
+//    public void findByIdSuccess() {
+////        Long id = 1L;
+////        ClientDto created = createClient(id);
+////
+////        String expectedJson = objectMapper.writeValueAsString(created);
+////        log.debug("expectedJson: " + expectedJson);
+////
+////        Mockito.doReturn(created)
+////                .when(clientService).findById(id);
+////
+////        mockMvc.perform(get(BASE_URL + "/" + id))
+////                .andDo(print())
+////                .andExpect(status().isOk())
+////                .andExpect(content().json(expectedJson, true));
 //    }
 //
 //    @Test
-//    @DisplayName("[Controller] Клиент по id не найден")
-//    public void findByIdFail() throws Exception {
-//        Long id = 1L;
-//
-//        Mockito.doReturn(null)
-//                .when(clientService).findById(id);
-//
-//        mockMvc.perform(get(BASE_URL + "/" + id))
-//                .andDo(print())
-//                .andExpect(status().isNotFound());
+//    @DisplayName("Клиент по id не найден")
+//    public void findByIdFail() {
+////        Long id = 1L;
+////
+////        Mockito.doReturn(null)
+////                .when(clientService).findById(id);
+////
+////        mockMvc.perform(get(BASE_URL + "/" + id))
+////                .andDo(print())
+////                .andExpect(status().isNotFound());
 //    }
 //
 //    @Test
-//    @DisplayName("[Controller] Успешное добавление клиента без счетов")
-//    public void saveSuccess() throws Exception {
-//        Long id = 1L;
-//        String last = "Last";
-//        String first = "First";
-//        String mid = "Mid";
-//        Integer age = 44;
-//        List<Account> accounts = Collections.emptyList();
-//
-//        ClientDto client = new ClientDto(last, first, mid, age, accounts);
-//        ClientDto saved = new ClientDto(id, last, first, mid, age, accounts);
-//        log.debug("client: " + client);
-//        log.debug("saved: " + saved);
-//
-//        String clientJson = objectMapper.writeValueAsString(client);
-//        String savedJson = objectMapper.writeValueAsString(saved);
-//        log.debug("clientJson: " + clientJson);
-//        log.debug("savedJson: " + savedJson);
-//
-//        Mockito.when(clientService.save(client))
-//                .thenReturn(saved);
-//
-//        mockMvc.perform(
-//                        post(BASE_URL)
-//                                .content(clientJson)
-//                                .contentType(APPLICATION_JSON)
-//                )
-//                .andDo(print())
-//                .andExpect(status().isCreated())
-//                .andExpect(content().json(savedJson, true));
+//    @DisplayName("Успешное добавление клиента без счетов")
+//    public void saveSuccess() {
+////        Long id = 1L;
+////        String last = "Last";
+////        String first = "First";
+////        String mid = "Mid";
+////        Integer age = 44;
+////        List<Account> accounts = Collections.emptyList();
+////
+////        ClientDto client = new ClientDto(last, first, mid, age, accounts);
+////        ClientDto saved = new ClientDto(id, last, first, mid, age, accounts);
+////        log.debug("client: " + client);
+////        log.debug("saved: " + saved);
+////
+////        String clientJson = objectMapper.writeValueAsString(client);
+////        String savedJson = objectMapper.writeValueAsString(saved);
+////        log.debug("clientJson: " + clientJson);
+////        log.debug("savedJson: " + savedJson);
+////
+////        Mockito.when(clientService.save(client))
+////                .thenReturn(saved);
+////
+////        mockMvc.perform(
+////                        post(BASE_URL)
+////                                .content(clientJson)
+////                                .contentType(APPLICATION_JSON)
+////                )
+////                .andDo(print())
+////                .andExpect(status().isCreated())
+////                .andExpect(content().json(savedJson, true));
 //    }
 //}

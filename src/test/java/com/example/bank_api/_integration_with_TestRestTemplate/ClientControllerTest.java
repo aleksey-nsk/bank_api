@@ -34,18 +34,17 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ActiveProfiles("test")
 public class ClientControllerTest {
 
-    private final TestRestTemplate testRestTemplate;
-    private final ClientRepository clientRepository;
-    private final AccountRepository accountRepository;
-    private final CardRepository cardRepository;
+    @Autowired
+    private ClientRepository clientRepository;
 
     @Autowired
-    public ClientControllerTest(TestRestTemplate testRestTemplate, ClientRepository clientRepository, AccountRepository accountRepository, CardRepository cardRepository) {
-        this.testRestTemplate = testRestTemplate;
-        this.clientRepository = clientRepository;
-        this.accountRepository = accountRepository;
-        this.cardRepository = cardRepository;
-    }
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private CardRepository cardRepository;
+
+    @Autowired
+    private TestRestTemplate testRestTemplate;
 
     @LocalServerPort
     private String port;
@@ -209,7 +208,7 @@ public class ClientControllerTest {
                 saved.getLastname(),
                 saved.getFirstname(),
                 saved.getMiddlename(),
-                99,
+                ThreadLocalRandom.current().nextInt(18, 120),
                 Collections.emptyList()
         );
         ClientDto duplicateDto = ClientDto.valueOf(duplicate);
@@ -232,10 +231,7 @@ public class ClientControllerTest {
     @DisplayName("[TestRestTemplate] Успешное обновление клиента")
     public void updateSuccess() {
         Long id = saveClientInDB().getId();
-
-        Client update = new Client("New_last", "New_first", "New_mid", 77, Collections.emptyList());
-        ClientDto updateDto = ClientDto.valueOf(update);
-        log.debug("updateDto: " + updateDto);
+        ClientDto updateDto = createClient();
 
         String url = "http://localhost:" + port + BASE_URL + "/" + id;
         log.debug("url: " + url);
@@ -254,20 +250,17 @@ public class ClientControllerTest {
         Client updated = clientRepository.findById(id).get();
         log.debug("updated: " + updated);
 
-        assertThat(updated.getLastname()).isEqualTo("New_last");
-        assertThat(updated.getFirstname()).isEqualTo("New_first");
-        assertThat(updated.getMiddlename()).isEqualTo("New_mid");
-        assertThat(updated.getAge()).isEqualTo(77);
+        assertThat(updated.getLastname()).isEqualTo(updateDto.getLastname());
+        assertThat(updated.getFirstname()).isEqualTo(updateDto.getFirstname());
+        assertThat(updated.getMiddlename()).isEqualTo(updateDto.getMiddlename());
+        assertThat(updated.getAge()).isEqualTo(updateDto.getAge());
     }
 
     @Test
     @DisplayName("[TestRestTemplate] Клиент для обновления не найден")
     public void updateFail() {
         Long id = 1L;
-
-        Client update = new Client("New_last", "New_first", "New_mid", 77, Collections.emptyList());
-        ClientDto updateDto = ClientDto.valueOf(update);
-        log.debug("updateDto: " + updateDto);
+        ClientDto updateDto = createClient();
 
         String url = "http://localhost:" + port + BASE_URL + "/" + id;
         log.debug("url: " + url);
