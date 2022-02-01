@@ -56,23 +56,6 @@
             <version>2.1</version>
         </dependency>
 
-        <!-- Swagger -->
-        <!--        <dependency>-->
-        <!--            <groupId>io.springfox</groupId>-->
-        <!--            <artifactId>springfox-swagger2</artifactId>-->
-        <!--            <version>3.0.0</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>io.springfox</groupId>-->
-        <!--            <artifactId>springfox-boot-starter</artifactId>-->
-        <!--            <version>3.0.0</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>io.springfox</groupId>-->
-        <!--            <artifactId>springfox-swagger-ui</artifactId>-->
-        <!--            <version>3.0.0</version>-->
-        <!--        </dependency>-->
-
         <!-- Тестирование -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -94,6 +77,23 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId> <!-- для тестирования используем in-memory базу данных H2 -->
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- Swagger -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId> <!-- Springfox-реализация спецификации Swagger -->
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId> <!-- чтобы использовать Swagger UI -->
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId> <!-- для проектов на Spring Boot -->
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
 
