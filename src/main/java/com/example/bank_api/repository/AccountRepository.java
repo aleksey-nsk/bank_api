@@ -8,12 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    List<Account> findAccountByClientId(Long clientId);
+//    List<Account> findAccountByClientId(Long clientId);
 
     @Query("UPDATE Account SET client = :client WHERE id = :accountId")
     @Modifying

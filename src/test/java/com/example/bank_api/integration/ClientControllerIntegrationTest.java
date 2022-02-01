@@ -6,6 +6,8 @@ import com.example.bank_api.entity.Client;
 import com.example.bank_api.repository.AccountRepository;
 import com.example.bank_api.repository.CardRepository;
 import com.example.bank_api.repository.ClientRepository;
+import com.example.bank_api.service.AccountService;
+import com.example.bank_api.service.CardService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.RandomStringUtils;
@@ -71,6 +73,12 @@ public class ClientControllerIntegrationTest {
 
     @Autowired
     private CardRepository cardRepository;
+
+    @Autowired
+    private AccountService accountService;
+
+    @Autowired
+    private CardService cardService;
 
     private static final String BASE_URL = "/api/v1/client";
 
@@ -247,11 +255,34 @@ public class ClientControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("Успешное удаление клиента")
+    @DisplayName("Успешное удаление клиента без счетов")
     public void deleteSuccess() throws Exception {
         Long id = saveClientInDB().getId();
 
         mockMvc.perform(delete(BASE_URL + "/" + id))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        assertThat(clientRepository.findAll().size()).isEqualTo(0);
+        assertThat(accountRepository.findAll().size()).isEqualTo(0);
+        assertThat(cardRepository.findAll().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("Успешное удаление клиента со счетами и картами")
+    public void deleteWithAccountsAndCardsSuccess() throws Exception {
+        Long clientId = saveClientInDB().getId();
+        Long accountId = accountService.save(clientId).getId();
+        cardService.save(clientId, accountId);
+
+        Client clientWithAccountsAndCards = clientRepository.findById(clientId).get();
+        log.debug("clientWithAccountsAndCards: " + clientWithAccountsAndCards);
+
+        assertThat(clientRepository.findAll()).size().isEqualTo(1);
+        assertThat(accountRepository.findAll()).size().isEqualTo(1);
+        assertThat(cardRepository.findAll()).size().isEqualTo(1);
+
+        mockMvc.perform(delete(BASE_URL + "/" + clientId))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 

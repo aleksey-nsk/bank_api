@@ -6,6 +6,8 @@ import com.example.bank_api.entity.Client;
 import com.example.bank_api.repository.AccountRepository;
 import com.example.bank_api.repository.CardRepository;
 import com.example.bank_api.repository.ClientRepository;
+import com.example.bank_api.service.AccountService;
+import com.example.bank_api.service.CardService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -53,6 +55,12 @@ public class ClientControllerRestTemplateTest {
 
     @Autowired
     private CardRepository cardRepository;
+
+    @Autowired
+    private AccountService accountService;
+
+    @Autowired
+    private CardService cardService;
 
     // Класс TestRestTemplate позволяет писать тесты для REST API.
     // Здесь мы запускаем вэб-сервер, делаем запросы - всё по-настоящему.
@@ -296,7 +304,7 @@ public class ClientControllerRestTemplateTest {
     }
 
     @Test
-    @DisplayName("Успешное удаление клиента")
+    @DisplayName("Успешное удаление клиента без счетов")
     public void deleteSuccess() {
         Long id = saveClientInDB().getId();
 
@@ -304,6 +312,34 @@ public class ClientControllerRestTemplateTest {
         log.debug("url: " + url);
 
         ResponseEntity<ClientDto> actual = testRestTemplate.exchange(url, HttpMethod.DELETE, null, ClientDto.class, id);
+        log.debug("actual: " + actual);
+
+        assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(actual.getBody()).isNull();
+
+        assertThat(clientRepository.findAll()).size().isEqualTo(0);
+        assertThat(accountRepository.findAll()).size().isEqualTo(0);
+        assertThat(cardRepository.findAll()).size().isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("Успешное удаление клиента со счетами и картами")
+    public void deleteWithAccountsAndCardsSuccess() {
+        Long clientId = saveClientInDB().getId();
+        Long accountId = accountService.save(clientId).getId();
+        cardService.save(clientId, accountId);
+
+        Client clientWithAccountsAndCards = clientRepository.findById(clientId).get();
+        log.debug("clientWithAccountsAndCards: " + clientWithAccountsAndCards);
+
+        assertThat(clientRepository.findAll()).size().isEqualTo(1);
+        assertThat(accountRepository.findAll()).size().isEqualTo(1);
+        assertThat(cardRepository.findAll()).size().isEqualTo(1);
+
+        String url = "http://localhost:" + port + BASE_URL + "/" + clientId;
+        log.debug("url: " + url);
+
+        ResponseEntity<ClientDto> actual = testRestTemplate.exchange(url, HttpMethod.DELETE, null, ClientDto.class, clientId);
         log.debug("actual: " + actual);
 
         assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
