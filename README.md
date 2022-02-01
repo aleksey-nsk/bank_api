@@ -1,41 +1,54 @@
 # Info
 
-1. Проектная задача **Bank API**. Требуется реализовать веб-сервис, реализующий логику работы клиентов
+1. Проектная задача **Bank API**. Требуется реализовать вэб-сервис, реализующий логику работы клиентов
 с банковскими счетами. API Физического лица (клиента) должно позволять выполнять следующие действия по счетам:  
-
-       Выпуск новой карты по счету
-       Проcмотр списка карт
-       Внесение вредств
-       Проверка баланса  
-
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/01_task.png)  
 Подробное условие задачи в файле **files/task.pdf**.
 
-2. Использована БД **Postgres** в контейнере **Docker**. Настройки см. в файле **docker-compose.yaml**.
+2. Использована БД **Postgres** в контейнере **Docker**. Настройки контейнера 
+указываем в файле **docker-compose.yaml**:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/02_docker_compose.png)  
 
-3. Зависимости лучше внедрять через конструктор в final поля. Так в будущем будет проще тестировать 
-  классы unit тестами, т.к все нужные зависимости можно будет передать через конструктор, 
-  а в случае с внедрение в поле, так не получится. Так же так нельзя будет использовать класс, 
-  не передав в него нужные зависимости.
+Настройки подключения к БД прописываем в файле **src/main/resources/application.yaml**:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/03_application.png)  
 
-       public class ClientController {
-           
-           private final ClientService clientService;
-           
-           @Autowired
-           public ClientController(ClientService clientService) {
-               this.clientService = clientService;
-           }
-           
-       }   
+3. Для тестирования используем **in-memory базу данных H2**. Настройки **тестового профиля** 
+прописываем в файле **src/test/resources/application-test.yaml**:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/04_application_test.png)  
 
-3. **http://localhost:8082/h2-console** - консоль базы данных **H2**:  
-JDBC URL: jdbc:h2:mem:bank;MODE=PostgreSQL  
-User Name: sa  
-Password: <пустой>
-4. Данные в базу добавлены с помощью **Flyway**. 
-5. **http://localhost:8082/swagger-ui/index.html** - документация к API (сгенерирована с помощью **Swagger**).
+Далее над всеми тестовыми классами пишем аннотацию **@ActiveProfiles("test")** для
+активации тестового профиля.  
+
+Тесты (**unit** и **интеграционные**) создаём в директории **src/test**:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/05_test_structure.png)    
+
+4. Документацию к API генерируем с помощью **Swagger**. Для этого подключаем зависимости в pom-файле:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/06_swagger_dependency.png)  
+
+Далее создаём конфигурационный файл **src/main/java/com/example/bank_api/config/SpringFoxConfig.java**:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/07_spring_fox_config.png)  
+
+Для документирования используем аннотацию **@Api** над классами контроллеров, 
+и аннотацию **@ApiOperation** над методами:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/08_swagger_annotation.png)  
+
+Для просмотра API-документации открыть адрес **http://localhost:8082/swagger-ui/index.html**:
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/09_api_documentation.png)  
+
+5.
+
+
+
+
+
+
+ 
+
+
+
 6. **http://localhost:8082/** - открыть приложение (фронтэнд начал делать на **AngularJS**).
-7. Изначально проверка API осуществлялась с помощью **Postman**. Затем были написаны **интеграционные тесты** и **юнит-тесты**.
+7. Изначально проверка API осуществлялась с помощью **Postman**. Затем были 
+написаны **интеграционные тесты** и **юнит-тесты**.
 8. Для тестирования используется тестовый **профиль** со своей базой данных.
 
 # TODO list
