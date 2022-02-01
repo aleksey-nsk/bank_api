@@ -12,8 +12,6 @@ import java.math.BigDecimal;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-//    List<Account> findAccountByClientId(Long clientId);
-
     @Query("UPDATE Account SET client = :client WHERE id = :accountId")
     @Modifying
     void updateAccountSetClient(Client client, Long accountId);

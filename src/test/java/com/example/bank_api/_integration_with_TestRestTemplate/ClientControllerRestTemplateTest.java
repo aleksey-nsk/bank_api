@@ -1,5 +1,6 @@
 package com.example.bank_api._integration_with_TestRestTemplate;
 
+import com.example.bank_api.dto.CardDto;
 import com.example.bank_api.dto.ClientDto;
 import com.example.bank_api.entity.Account;
 import com.example.bank_api.entity.Client;
@@ -78,6 +79,8 @@ public class ClientControllerRestTemplateTest {
     // Очищаю БД после каждого теста
     @AfterEach
     void tearDown() {
+        cardRepository.deleteAll();
+        accountRepository.deleteAll();
         clientRepository.deleteAll();
     }
 
@@ -326,15 +329,21 @@ public class ClientControllerRestTemplateTest {
     @DisplayName("Успешное удаление клиента со счетами и картами")
     public void deleteWithAccountsAndCardsSuccess() {
         Long clientId = saveClientInDB().getId();
-        Long accountId = accountService.save(clientId).getId();
-        cardService.save(clientId, accountId);
+
+        Long accountId1 = accountService.save(clientId).getId();
+        Long accountId2 = accountService.save(clientId).getId();
+
+        CardDto card11 = cardService.save(clientId, accountId1);
+        CardDto card12 = cardService.save(clientId, accountId1);
+        CardDto card21 = cardService.save(clientId, accountId2);
+        CardDto card22 = cardService.save(clientId, accountId2);
 
         Client clientWithAccountsAndCards = clientRepository.findById(clientId).get();
         log.debug("clientWithAccountsAndCards: " + clientWithAccountsAndCards);
 
         assertThat(clientRepository.findAll()).size().isEqualTo(1);
-        assertThat(accountRepository.findAll()).size().isEqualTo(1);
-        assertThat(cardRepository.findAll()).size().isEqualTo(1);
+        assertThat(accountRepository.findAll()).size().isEqualTo(2);
+        assertThat(cardRepository.findAll()).size().isEqualTo(4);
 
         String url = "http://localhost:" + port + BASE_URL + "/" + clientId;
         log.debug("url: " + url);

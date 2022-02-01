@@ -2,6 +2,8 @@ package com.example.bank_api.controller;
 
 import com.example.bank_api.dto.AccountDto;
 import com.example.bank_api.service.AccountService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/client/{client_id}/account")
-//@Api(description = "Контроллер для счетов")
+@Api(description = "Контроллер для счетов")
 public class AccountController {
 
     private final AccountService accountService;
@@ -23,14 +25,14 @@ public class AccountController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-//    @ApiOperation(value = "Получить все счета клиента")
+    @ApiOperation(value = "Получить все счета клиента")
     public List<AccountDto> findAll(@PathVariable("client_id") Long clientId) {
         return accountService.findAll(clientId);
     }
 
     @GetMapping("/{account_id}")
     @ResponseStatus(HttpStatus.OK)
-//    @ApiOperation(value = "Получить счёт по id")
+    @ApiOperation(value = "Получить счёт по id")
     public AccountDto findById(
             @PathVariable("client_id") Long clientId,
             @PathVariable("account_id") Long accountId
@@ -40,17 +42,17 @@ public class AccountController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-//    @ApiOperation(value = "Добавить счёт клиенту (без карт)")
+    @ApiOperation(value = "Добавить счёт клиенту (без карт)")
     public AccountDto save(@PathVariable("client_id") Long clientId) {
         return accountService.save(clientId);
     }
 
     @PutMapping("/card")
     @ResponseStatus(HttpStatus.OK)
-//    @ApiOperation(value = "Внести деньги на счёт")
+    @ApiOperation(value = "Внести деньги на счёт")
     public void updateAccountAddBalanceByCardNumber(
             @PathVariable("client_id") Long clientId,
-            @RequestParam("number") String cardNumber,
+            @RequestParam("cardNumber") String cardNumber,
             @RequestParam("add") BigDecimal add
     ) {
         accountService.updateAccountAddBalanceByCardNumber(clientId, cardNumber, add);

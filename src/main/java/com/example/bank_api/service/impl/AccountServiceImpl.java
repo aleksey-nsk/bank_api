@@ -17,12 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Log4j2
@@ -41,13 +39,13 @@ public class AccountServiceImpl implements AccountService {
     public List<AccountDto> findAll(Long clientId) {
         Client client = clientRepository.findById(clientId).orElseThrow(() -> new ClientNotFoundException(clientId));
 
-        List<AccountDto> accountDtoList = client.getAccounts()
+        List<AccountDto> list = client.getAccounts()
                 .stream()
                 .map(it -> AccountDto.valueOf(it))
                 .collect(Collectors.toList());
 
-        log.debug("Список всех счетов клиента: " + accountDtoList);
-        return accountDtoList;
+        log.debug("На клиента с id=" + clientId + " заведены счета: " + list);
+        return list;
     }
 
     @Override
@@ -60,8 +58,6 @@ public class AccountServiceImpl implements AccountService {
                 .map(it -> AccountDto.valueOf(it))
                 .findFirst()
                 .orElseThrow(() -> new AccountNotFoundException("У клиента с id=" + clientId + " отсутствует счёт с id=" + accountId));
-
-        // У клиента с id=111 отсутствует счёт с id=2222
 
         log.debug("По clientId=" + clientId + " и accountId=" + accountId + " получен счёт: " + accountDto);
         return accountDto;
@@ -78,11 +74,8 @@ public class AccountServiceImpl implements AccountService {
         List<Card> cards = Collections.emptyList();
 
         Account account = new Account(number, openingDate, balance, cards);
-
         AccountDto saved = AccountDto.valueOf(accountRepository.save(account)); // сохранить в БД счёт
-
         accountRepository.updateAccountSetClient(client, saved.getId()); // сохранённому счёту указать id клиента
-
         log.debug("Клиенту с id=" + clientId + " был добавлен счёт: " + saved);
 
         return saved;
@@ -91,38 +84,21 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public void updateAccountAddBalanceByCardNumber(Long clientId, String cardNumber, BigDecimal add) {
-        log.debug("");
-        log.debug("Внести деньги на счёт, по номеру карты");
-        log.debug("  clientId: " + clientId);
-        log.debug("  cardNumber: " + cardNumber);
-        log.debug("  add: " + add);
-
         Client client = clientRepository.findById(clientId).orElseThrow(() -> new ClientNotFoundException(clientId));
 
-        // flatMap решает проблему !!!!!!!!!!!!!!!!!!!
-        List<Card> allCards = client.getAccounts()
+        Card theCard = client.getAccounts()
                 .stream()
                 .flatMap(account -> account.getCards().stream())
-                .collect(Collectors.toList());
-        log.debug("Все карты клиента: " + allCards);
-
-        Card card = allCards.stream()
-                .filter(it -> it.getNumber().equalsIgnoreCase(cardNumber))
+                .filter(card -> card.getNumber().equalsIgnoreCase(cardNumber))
                 .findFirst()
-                .orElseThrow(() -> new CardNotFoundException(cardNumber));
+                .orElseThrow(() -> new CardNotFoundException("У клиента с id=" + clientId + " отсутствует карта с номером=" + cardNumber));
 
-        // У клиента с id=111 отсутствует карта с number=2222
-
-        Account account = card.getAccount();
+        Account account = theCard.getAccount();
 
         BigDecimal currentBalance = account.getBalance();
-        log.debug("");
-        log.debug("Текущий баланс на счёте: " + currentBalance);
-
         BigDecimal newBalance = currentBalance.add(add);
-        log.debug("Новый баланс на счёте: " + newBalance);
+        accountRepository.updateAccountSetBalance(account.getId(), newBalance); // установить новый баланс счёта
 
-        log.debug("Обновить счёт - установить новый баланс");
-        accountRepository.updateAccountSetBalance(account.getId(), newBalance);
+        log.debug("Клиенту с id=" + clientId + " на карту с номером=" + cardNumber + " внесена сумма=" + add);
     }
 }
