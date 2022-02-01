@@ -31,7 +31,7 @@ public class Client {
     @Column(name = "age")
     private Integer age;
 
-    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "client")
     private List<Account> accounts;
 
     public Client(String lastname, String firstname, String middlename, Integer age, List<Account> accounts) {

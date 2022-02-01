@@ -31,7 +31,7 @@ public class Account {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "account")
     private List<Card> cards;
 
     public Account() {
