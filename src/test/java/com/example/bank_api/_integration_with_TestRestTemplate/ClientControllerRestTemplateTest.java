@@ -276,7 +276,6 @@ public class ClientControllerRestTemplateTest {
         assertThat(cardRepository.findAll()).size().isEqualTo(0);
 
         Client updated = clientRepository.findById(id).get();
-        log.debug("updated: " + updated);
 
         assertThat(updated.getLastname()).isEqualTo(updateDto.getLastname());
         assertThat(updated.getFirstname()).isEqualTo(updateDto.getFirstname());
@@ -337,9 +336,6 @@ public class ClientControllerRestTemplateTest {
         CardDto card12 = cardService.save(clientId, accountId1);
         CardDto card21 = cardService.save(clientId, accountId2);
         CardDto card22 = cardService.save(clientId, accountId2);
-
-        Client clientWithAccountsAndCards = clientRepository.findById(clientId).get();
-        log.debug("clientWithAccountsAndCards: " + clientWithAccountsAndCards);
 
         assertThat(clientRepository.findAll()).size().isEqualTo(1);
         assertThat(accountRepository.findAll()).size().isEqualTo(2);
