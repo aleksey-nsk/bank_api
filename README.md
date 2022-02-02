@@ -35,7 +35,7 @@
 Для просмотра API-документации открыть адрес **http://localhost:8082/swagger-ui/index.html**:
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/09_api_documentation.png)  
 
-5.
+5. Фронтэнд
 
 
 

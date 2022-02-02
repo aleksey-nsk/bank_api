@@ -2,13 +2,17 @@ package com.example.bank_api.dto;
 
 import com.example.bank_api.entity.Account;
 import com.example.bank_api.entity.Card;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccountDto {
 
     private Long id;
@@ -16,14 +20,6 @@ public class AccountDto {
     private Date openingDate;
     private BigDecimal balance;
     private List<Card> cards;
-
-    public AccountDto(Long id, String number, Date openingDate, BigDecimal balance, List<Card> cards) {
-        this.id = id;
-        this.number = number;
-        this.openingDate = openingDate;
-        this.balance = balance;
-        this.cards = cards;
-    }
 
     public static AccountDto valueOf(Account account) {
         return new AccountDto(

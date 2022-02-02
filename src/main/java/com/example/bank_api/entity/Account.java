@@ -2,6 +2,7 @@ package com.example.bank_api.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "accounts")
 @Data
+@NoArgsConstructor
 public class Account {
 
     @Id
@@ -33,9 +35,6 @@ public class Account {
 
     @OneToMany(mappedBy = "account")
     private List<Card> cards;
-
-    public Account() {
-    }
 
     public Account(String number, Date openingDate, BigDecimal balance, List<Card> cards) {
         this.number = number;

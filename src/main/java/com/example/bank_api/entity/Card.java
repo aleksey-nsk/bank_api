@@ -2,6 +2,7 @@ package com.example.bank_api.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.Date;
 @Entity
 @Table(name = "cards")
 @Data
+@NoArgsConstructor
 public class Card {
 
     @Id
@@ -25,9 +27,6 @@ public class Card {
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
-
-    public Card() {
-    }
 
     public Card(Long id, String number, Date releaseDate) {
         this.id = id;
