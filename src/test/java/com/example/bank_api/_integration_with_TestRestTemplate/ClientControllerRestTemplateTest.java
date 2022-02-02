@@ -313,7 +313,7 @@ public class ClientControllerRestTemplateTest {
         String url = "http://localhost:" + port + BASE_URL + "/" + id;
         log.debug("url: " + url);
 
-        ResponseEntity<ClientDto> actual = testRestTemplate.exchange(url, HttpMethod.DELETE, null, ClientDto.class, id);
+        ResponseEntity<Object> actual = testRestTemplate.exchange(url, HttpMethod.DELETE, null, Object.class, id);
         log.debug("actual: " + actual);
 
         assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -344,7 +344,7 @@ public class ClientControllerRestTemplateTest {
         String url = "http://localhost:" + port + BASE_URL + "/" + clientId;
         log.debug("url: " + url);
 
-        ResponseEntity<ClientDto> actual = testRestTemplate.exchange(url, HttpMethod.DELETE, null, ClientDto.class, clientId);
+        ResponseEntity<Object> actual = testRestTemplate.exchange(url, HttpMethod.DELETE, null, Object.class, clientId);
         log.debug("actual: " + actual);
 
         assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -363,7 +363,7 @@ public class ClientControllerRestTemplateTest {
         String url = "http://localhost:" + port + BASE_URL + "/" + id;
         log.debug("url: " + url);
 
-        ResponseEntity<ClientDto> actual = testRestTemplate.exchange(url, HttpMethod.DELETE, null, ClientDto.class, id);
+        ResponseEntity<Object> actual = testRestTemplate.exchange(url, HttpMethod.DELETE, null, Object.class, id);
         log.debug("actual: " + actual);
 
         assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
