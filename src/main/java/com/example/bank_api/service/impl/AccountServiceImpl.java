@@ -89,7 +89,7 @@ public class AccountServiceImpl implements AccountService {
         Card theCard = client.getAccounts()
                 .stream()
                 .flatMap(account -> account.getCards().stream())
-                .filter(card -> card.getNumber().equalsIgnoreCase(cardNumber))
+                .filter(card -> card.getCardNumber().equalsIgnoreCase(cardNumber))
                 .findFirst()
                 .orElseThrow(() -> new CardNotFoundException("У клиента с id=" + clientId + " отсутствует карта с номером=" + cardNumber));
 

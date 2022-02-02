@@ -18,8 +18,8 @@ public class Card {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "number")
-    private String number;
+    @Column(name = "card_number")
+    private String cardNumber;
 
     @Column(name = "release_date")
     private Date releaseDate;
@@ -28,14 +28,14 @@ public class Card {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    public Card(Long id, String number, Date releaseDate) {
+    public Card(Long id, String cardNumber, Date releaseDate) {
         this.id = id;
-        this.number = number;
+        this.cardNumber = cardNumber;
         this.releaseDate = releaseDate;
     }
 
-    public Card(String number, Date releaseDate) {
-        this.number = number;
+    public Card(String cardNumber, Date releaseDate) {
+        this.cardNumber = cardNumber;
         this.releaseDate = releaseDate;
     }
 
@@ -48,7 +48,7 @@ public class Card {
     public String toString() {
         return "Card{" +
                 "id=" + id +
-                ", number='" + number + '\'' +
+                ", cardNumber='" + cardNumber + '\'' +
                 ", releaseDate=" + releaseDate +
                 '}';
     }

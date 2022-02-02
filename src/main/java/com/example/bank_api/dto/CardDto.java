@@ -13,18 +13,18 @@ import java.util.Date;
 public class CardDto {
 
     private Long id;
-    private String number;
+    private String cardNumber;
     private Date releaseDate;
 
     public static CardDto valueOf(Card card) {
         return new CardDto(
                 card.getId(),
-                card.getNumber(),
+                card.getCardNumber(),
                 card.getReleaseDate()
         );
     }
 
     public Card mapToCard() {
-        return new Card(id, number, releaseDate);
+        return new Card(id, cardNumber, releaseDate);
     }
 }

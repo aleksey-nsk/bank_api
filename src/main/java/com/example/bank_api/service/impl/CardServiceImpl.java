@@ -42,10 +42,10 @@ public class CardServiceImpl implements CardService {
                 .findFirst()
                 .orElseThrow(() -> new AccountNotFoundException("У клиента с id=" + clientId + " отсутствует счёт с id=" + accountId));
 
-        String number = RandomStringUtils.randomNumeric(16); // случайный 16-значный номер карты
+        String cardNumber = RandomStringUtils.randomNumeric(16); // случайный 16-значный номер карты
         Date releaseDate = new Date(); // дата выпуска карты - текущая дата
 
-        Card card = new Card(number, releaseDate);
+        Card card = new Card(cardNumber, releaseDate);
         CardDto saved = CardDto.valueOf(cardRepository.save(card)); // сохранить в БД карту
         cardRepository.updateCardSetAccount(theAccount, saved.getId()); // сохранённую карту привязать к счёту
         log.debug("Клиенту с id=" + clientId + " к счёту с id=" + accountId + " была привязана карта: " + saved);

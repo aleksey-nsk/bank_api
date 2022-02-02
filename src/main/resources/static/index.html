@@ -58,14 +58,14 @@
             </thead>
             <tbody ng-repeat="account in Accounts">
             <tr ng-repeat="card in account.cards">
-                <td>{{card.number}}</td>
+                <td>{{card.cardNumber}}</td>
                 <td>{{card.releaseDate | date:'d MMM yyyy'}}</td>
                 <td>{{account.number}}</td>
                 <td>
                     <input class="form-control" type="number" ng-model="add">
                 </td>
                 <td>
-                    <button class="btn btn-primary" ng-click="addBalance(Client.id, card.number, add)">
+                    <button class="btn btn-primary" ng-click="addBalance(Client.id, card.cardNumber, add)">
                         Зачислить
                     </button>
                 </td>

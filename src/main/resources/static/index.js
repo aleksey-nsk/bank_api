@@ -31,7 +31,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
 
     // Внести деньги на счёт
     $scope.addBalance = function (clientId, cardNumber, add) {
-        const url = contextPath + '/api/v1/client/' + clientId + '/account/card?number=' + cardNumber + '&add=' + add;
+        const url = contextPath + '/api/v1/client/' + clientId + '/account/card?cardNumber=' + cardNumber + '&add=' + add;
         console.log(url);
         $http.put(url)
                 .then(function (resp) {
