@@ -87,11 +87,6 @@ public class CardControllerRestTemplateTest {
         return savedAccountDto.mapToAccount();
     }
 
-    private Card saveCardInDB(Client client, Account account) {
-        CardDto savedCardDto = cardService.save(client.getId(), account.getId());
-        return savedCardDto.mapToCard();
-    }
-
     @Test
     @DisplayName("Успешное добавление карты по счёту")
     public void saveSuccess() {
