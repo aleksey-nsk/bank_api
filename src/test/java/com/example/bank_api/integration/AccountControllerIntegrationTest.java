@@ -13,7 +13,6 @@ import com.example.bank_api.service.CardService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.RandomStringUtils;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -215,9 +214,9 @@ public class AccountControllerIntegrationTest {
                 .andExpect(jsonPath("$.balance").value(0))
                 .andExpect(jsonPath("$.cards").isArray());
 
-        AssertionsForClassTypes.assertThat(clientRepository.findAll().size()).isEqualTo(1);
-        AssertionsForClassTypes.assertThat(accountRepository.findAll().size()).isEqualTo(1);
-        AssertionsForClassTypes.assertThat(cardRepository.findAll().size()).isEqualTo(0);
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
+        assertThat(accountRepository.findAll().size()).isEqualTo(1);
+        assertThat(cardRepository.findAll().size()).isEqualTo(0);
     }
 
     @Test
@@ -263,9 +262,9 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        AssertionsForClassTypes.assertThat(clientRepository.findAll().size()).isEqualTo(1);
-        AssertionsForClassTypes.assertThat(accountRepository.findAll().size()).isEqualTo(1);
-        AssertionsForClassTypes.assertThat(cardRepository.findAll().size()).isEqualTo(1);
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
+        assertThat(accountRepository.findAll().size()).isEqualTo(1);
+        assertThat(cardRepository.findAll().size()).isEqualTo(1);
 
         Account updated = accountRepository.findById(account.getId()).get();
 
@@ -300,9 +299,9 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
-        AssertionsForClassTypes.assertThat(clientRepository.findAll().size()).isEqualTo(1);
-        AssertionsForClassTypes.assertThat(accountRepository.findAll().size()).isEqualTo(1);
-        AssertionsForClassTypes.assertThat(cardRepository.findAll().size()).isEqualTo(1);
+        assertThat(clientRepository.findAll().size()).isEqualTo(1);
+        assertThat(accountRepository.findAll().size()).isEqualTo(1);
+        assertThat(cardRepository.findAll().size()).isEqualTo(1);
 
         Account notUpdated = accountRepository.findById(account.getId()).get();
 
@@ -338,9 +337,9 @@ public class AccountControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
-        AssertionsForClassTypes.assertThat(clientRepository.findAll().size()).isEqualTo(2);
-        AssertionsForClassTypes.assertThat(accountRepository.findAll().size()).isEqualTo(2);
-        AssertionsForClassTypes.assertThat(cardRepository.findAll().size()).isEqualTo(2);
+        assertThat(clientRepository.findAll().size()).isEqualTo(2);
+        assertThat(accountRepository.findAll().size()).isEqualTo(2);
+        assertThat(cardRepository.findAll().size()).isEqualTo(2);
 
         Account notUpdated1 = accountRepository.findById(account1.getId()).get();
         assertThat(notUpdated1.getId()).isEqualTo(account1.getId());

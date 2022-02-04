@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -151,7 +150,7 @@ public class ClientControllerUnitTest {
         log.debug("savedJson: " + savedJson);
         log.debug("clientJson: " + clientJson);
 
-        when(clientService.save(client))
+        Mockito.when(clientService.save(client))
                 .thenReturn(saved);
 
         mockMvc.perform(post(BASE_URL).content(clientJson).contentType(APPLICATION_JSON))
