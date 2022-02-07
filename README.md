@@ -44,7 +44,8 @@
 Запущенное приложение:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/11_front.png)  
 
-6. Обработка исключений в Spring  
+6. Обработка исключений в Spring: создаём **пользовательские исключения**:  `ClientNotFoundException`, 
+`AccountNotFoundException`, `CardNotFoundException`, `ClientDuplicateException`:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/12_exception.png)  
 
 Для обработки исключений используем **эдвайсы**. Начиная со Spring 3.2 можно глобально и централизованно 
@@ -52,9 +53,6 @@
 @ControllerAdvice-класс имеет наибольший приоритет. Внутри данного класса создаются 
 методы с аннотацией **@ExceptionHandler**, с помощью которой определяется 
 обрабатываемое исключение (либо список обрабатываемых исключений).  
-
-Создаём **пользовательские исключения**:  `ClientNotFoundException`, `AccountNotFoundException`,
-`CardNotFoundException`, `ClientDuplicateException`.  
  
 Можно в рамках эдвайса сделать сразу несколько методов с аннотациями @ExceptionHandler для обработки 
 разных исключений. Все эти методы возвращают **ResponseEntity<>** с нашим собственным типом **Response**.
