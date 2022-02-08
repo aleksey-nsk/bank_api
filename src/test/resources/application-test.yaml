@@ -17,5 +17,5 @@ spring:
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.H2Dialect
-    flyway:
-        enabled: false # отключить Flyway-миграции для тестов
+    liquibase:
+        enabled: false # отключить Liquibase-миграции для тестов
