@@ -27,7 +27,7 @@ public class Account {
     private Date openingDate;
 
     @Column(name = "balance")
-    private BigDecimal balance;
+    private BigDecimal balance; // всегда использовать BigDecimal для работы с деньгами!
 
     @ManyToOne
     @JoinColumn(name = "client_id")
