@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="Create and fill table accounts" author="Aleksey Zhdanov">
+        <createTable tableName="accounts" remarks="Счета">
+            <column name="id" type="integer" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="accounts_pk"/>
+            </column>
+            <column name="number" type="varchar(50)" remarks="Номер счёта"/>
+            <column name="opening_date" type="date" remarks="Дата открытия счёта" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="balance" type="numeric"/>
+        </createTable>
+        <addColumn tableName="accounts">
+            <column name="client_id" type="integer"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="accounts"
+                                 baseColumnNames="client_id"
+                                 referencedTableName="clients"
+                                 referencedColumnNames="id"
+                                 constraintName="accounts_clients_fk"/>
+        <insert tableName="accounts">
+            <column name="number" value="11111222223333344444"/>
+            <column name="opening_date" value="2017-01-14"/>
+            <column name="balance" value="100"/>
+            <column name="client_id" valueComputed="(SELECT id FROM clients WHERE lastname = 'Иванов')"/>
+        </insert>
+        <insert tableName="accounts">
+            <column name="number" value="55555666667777788888"/>
+            <column name="opening_date" value="2018-02-15"/>
+            <column name="balance" value="500"/>
+            <column name="client_id" valueComputed="(SELECT id FROM clients WHERE lastname = 'Иванов')"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

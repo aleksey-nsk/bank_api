@@ -22,4 +22,4 @@ spring:
             hibernate:
                 dialect: org.hibernate.dialect.PostgreSQLDialect
     liquibase:
-        change-log: classpath:liquibase/changelog.yaml
+        change-log: classpath:/db/changelog/db.changelog-master.yaml

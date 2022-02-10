@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="Create and fill table clients" author="Aleksey Zhdanov">
+        <createTable tableName="clients" remarks="Клиенты">
+            <column name="id" type="integer" remarks="Идентификатор клиента" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="clients_pk"/>
+            </column>
+            <column name="lastname" type="varchar(50)" remarks="Фамилия">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstname" type="varchar(50)" remarks="Имя">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middlename" type="varchar(50)" remarks="Отчество"/>
+            <column name="age" type="integer" remarks="Возраст">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <insert tableName="clients">
+            <column name="lastname" value="Иванов"/>
+            <column name="firstname" value="Иван"/>
+            <column name="middlename" value="Иванович"/>
+            <column name="age" value="33"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,8 @@
+# Список changeSet–ов
+databaseChangeLog:
+    -   include:
+            file: db/changelog/01_table_clients.xml
+    -   include:
+            file: db/changelog/02_table_accounts.xml
+    -   include:
+            file: db/changelog/03_table_cards.xml

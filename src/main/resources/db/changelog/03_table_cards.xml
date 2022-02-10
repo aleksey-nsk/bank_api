@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="Create and fill table cards" author="Aleksey Zhdanov">
+        <createTable tableName="cards" remarks="Карты">
+            <column name="id" type="integer" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="cards_pk"/>
+            </column>
+            <column name="card_number" type="varchar(50)" remarks="Номер карты"/>
+            <column name="release_date" type="date" remarks="Дата выпуска карты" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addColumn tableName="cards">
+            <column name="account_id" type="integer"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="cards"
+                                 baseColumnNames="account_id"
+                                 referencedTableName="accounts"
+                                 referencedColumnNames="id"
+                                 constraintName="cards_accounts_fk"/>
+        <insert tableName="cards">
+            <column name="card_number" value="2020201111122222"/>
+            <column name="release_date" value="2019-09-15"/>
+            <column name="account_id"
+                    valueComputed="(SELECT id FROM accounts WHERE accounts.number = '11111222223333344444')"/>
+        </insert>
+        <insert tableName="cards">
+            <column name="card_number" value="2020203333344444"/>
+            <column name="release_date" value="2019-10-16"/>
+            <column name="account_id"
+                    valueComputed="(SELECT id FROM accounts WHERE accounts.number = '11111222223333344444')"/>
+        </insert>
+        <insert tableName="cards">
+            <column name="card_number" value="2020205555566666"/>
+            <column name="release_date" value="2020-11-17"/>
+            <column name="account_id"
+                    valueComputed="(SELECT id FROM accounts WHERE accounts.number = '55555666667777788888')"/>
+        </insert>
+        <insert tableName="cards">
+            <column name="card_number" value="2020207777788888"/>
+            <column name="release_date" value="2020-12-18"/>
+            <column name="account_id"
+                    valueComputed="(SELECT id FROM accounts WHERE accounts.number = '55555666667777788888')"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
