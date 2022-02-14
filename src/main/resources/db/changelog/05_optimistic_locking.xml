@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="Add version field to entities" author="Aleksey Zhdanov">
+        <addColumn tableName="clients">
+            <column name="version" type="int"/>
+        </addColumn>
+        <addColumn tableName="accounts">
+            <column name="version" type="int"/>
+        </addColumn>
+        <addColumn tableName="cards">
+            <column name="version" type="int"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

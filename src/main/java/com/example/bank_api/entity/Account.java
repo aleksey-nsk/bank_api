@@ -36,6 +36,9 @@ public class Account {
     @OneToMany(mappedBy = "account")
     private List<Card> cards;
 
+    @Version
+    private Integer version;
+
     public Account(String number, Date openingDate, BigDecimal balance, List<Card> cards) {
         this.number = number;
         this.openingDate = openingDate;

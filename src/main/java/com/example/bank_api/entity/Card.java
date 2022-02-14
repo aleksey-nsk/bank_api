@@ -28,6 +28,9 @@ public class Card {
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @Version
+    private Integer version;
+
     public Card(Long id, String cardNumber, Date releaseDate) {
         this.id = id;
         this.cardNumber = cardNumber;

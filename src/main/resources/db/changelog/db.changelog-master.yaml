@@ -7,3 +7,5 @@ databaseChangeLog:
             file: db/changelog/03_table_cards.xml
     -   include:
             file: db/changelog/04_create_indexes.xml
+    -   include:
+            file: db/changelog/05_optimistic_locking.xml

@@ -34,7 +34,19 @@ public class Client {
     @OneToMany(mappedBy = "client")
     private List<Account> accounts;
 
+    @Version
+    private Integer version;
+
     public Client(String lastname, String firstname, String middlename, Integer age, List<Account> accounts) {
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.middlename = middlename;
+        this.age = age;
+        this.accounts = accounts;
+    }
+
+    public Client(Long id, String lastname, String firstname, String middlename, Integer age, List<Account> accounts) {
+        this.id = id;
         this.lastname = lastname;
         this.firstname = firstname;
         this.middlename = middlename;
