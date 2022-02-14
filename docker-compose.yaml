@@ -8,5 +8,6 @@ services:
         ports:
             - 15432:5432
         environment:
-            - 'POSTGRES_USER=sa'
-            - 'POSTGRES_PASSWORD=12345'
+            - 'POSTGRES_DB=bank'
+            - 'POSTGRES_USER=admin'
+            - 'POSTGRES_PASSWORD=123456'
