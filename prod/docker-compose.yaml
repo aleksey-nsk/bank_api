@@ -1,0 +1,49 @@
+version: '3.0'
+
+services:
+
+    # База данных PostgreSQL
+    database:
+        build:
+            context: services/database
+            dockerfile: Dockerfile
+        container_name: 'bank_prod_db'
+        ports:
+            - 15433:5432 # для доступа с локальной машины
+        environment:
+            - 'POSTGRES_DB=bank_prod'
+            - 'POSTGRES_USER=admin_prod'
+            - 'POSTGRES_PASSWORD=987'
+        volumes:
+            - db-data:/var/lib/postgresql/data
+
+    # Бекэнд (Spring Boot REST API на встроенном Tomcat-сервере)
+    backend:
+        build:
+            context: services/backend
+            dockerfile: Dockerfile
+        command: java -jar ./back.jar
+        environment:
+            - 'PORT=8083'
+            - 'SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/bank_prod'
+            - 'JS_URL=http://localhost:8080'
+        image: 'image_back'
+        container_name: 'bank_prod_back'
+        ports:
+            - 8083:8083
+        depends_on:
+            - database
+
+    # Фронтэнд на JavaScript на Nginx-сервере
+    frontend:
+        build:
+            context: services/frontend
+            dockerfile: Dockerfile
+        image: 'image_front'
+        container_name: 'bank_prod_front'
+        ports:
+            - 8080:80
+
+# Создать volume с именем db-data
+volumes:
+    db-data:

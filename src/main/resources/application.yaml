@@ -1,26 +1,4 @@
-# На каком порту стартует приложение
-server:
-    port: 8082
-
-# Настройки логирования
-logging:
-    level:
-        com.example.bank_api: debug
-    file:
-        name: logs/app.log
-
-# Настройки БД
+# Задаём активный профиль
 spring:
-    datasource:
-        driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://localhost:15432/bank
-        username: admin
-        password: 123456
-    jpa:
-        show-sql: false
-        properties:
-            hibernate:
-                dialect: org.hibernate.dialect.PostgreSQLDialect
-    liquibase:
-        enabled: true
-        change-log: classpath:db/changelog/db.changelog-master.yaml
+    profiles:
+        active: prod
