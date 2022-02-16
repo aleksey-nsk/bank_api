@@ -38,3 +38,6 @@ build/
 
 # Logs
 /logs
+
+# Other
+/.attach_*
