@@ -3,17 +3,17 @@
 1. Проектная задача **Bank API**. Требуется реализовать вэб-сервис, реализующий логику работы клиентов
 с банковскими счетами. API Физического лица (клиента) должно позволять выполнять следующие действия по счетам:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/01_task.png)  
-Подробное условие задачи в файле **files/task.pdf**.
+Подробное условие задачи в файле files/**task.pdf**.
 
 2. Использована БД **Postgres** в контейнере **Docker**. Настройки контейнера 
 указываем в файле **docker-compose.yaml**:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/02_docker_compose.png)  
 
-Настройки подключения к БД прописываем в файле **src/main/resources/application.yaml**:  
-![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/03_application.png)  
+Настройки подключения к БД прописываем в файле src/main/resources/**application-dev.yaml**:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/03_application-dev.png)  
 
 3. Для тестирования используем **in-memory базу данных H2**. Настройки **тестового профиля** 
-прописываем в файле **src/test/resources/application-test.yaml**:  
+прописываем в файле src/test/resources/**application-test.yaml**:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/04_application_test.png)  
 
 Далее над всеми тестовыми классами пишем аннотацию **@ActiveProfiles("test")** для
@@ -25,14 +25,14 @@
 4. Документацию к API генерируем с помощью **Swagger**. Для этого подключаем зависимости в pom-файле:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/06_swagger_dependency.png)  
 
-Далее создаём конфигурационный файл **src/main/java/com/example/bank_api/config/SpringFoxConfig.java**:  
+Далее создаём конфигурационный файл src/main/java/com/example/bank_api/config/**SpringFoxConfig.java**:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/07_spring_fox_config.png)  
 
 Для документирования используем аннотацию **@Api** над классами контроллеров, 
 и аннотацию **@ApiOperation** над методами:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/08_swagger_annotation.png)  
 
-Для просмотра API-документации открыть адрес **http://localhost:8082/swagger-ui/index.html**:
+Для просмотра **API-документации** открыть адрес **http://localhost:8082/swagger-ui/index.html**:
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/09_api_documentation.png)  
 
 5. Фронтенд реализован в виде **SPA**: имеется единственный HTML-файл с вёрсткой, и JS-скрипт для динамической
@@ -46,7 +46,7 @@
 
 6. Обработка исключений в Spring: создаём **пользовательские исключения**:  `ClientNotFoundException`, 
 `AccountNotFoundException`, `CardNotFoundException`, `ClientDuplicateException`:  
-![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/12_exception.png)  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/12_1_exception.png)  
 
 Для обработки исключений используем **эдвайсы**. Начиная со Spring 3.2 можно глобально и централизованно 
 обрабатывать исключения с помощью класса с аннотацией **@ControllerAdvice**. При обработке исключений
@@ -59,11 +59,12 @@
 Таким образом возвращаем клиенту как **код ответа**, так и **тело ответа**.
 
 7. Для автоматизации внесения обновлений в структуру БД используем **Liquibase**. Для внесения изменения 
-в БД требуется добавить новый **набор изменений (changeSet)**.
+в БД требуется добавить новый **набор изменений (changeSet)**. Структура файлов для Liquibase:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/12_2_liquibase.png)  
 
 8. **Индекс** — объект базы данных, создаваемый с целью повышения производительности поиска данных.
 Рекомендация: _"в БД на все foreign key и все поля поиска нужно добавить индексы для ускорения чтения"_.
-Добавляем миграцию, создающую индексы (**src/main/resources/db/changelog/04_create_indexes.xml**).  
+Добавляем миграцию, создающую индексы (src/main/resources/db/changelog/**04_create_indexes.xml**).  
 
 Затем выводим список индексов запросом:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/13_select_indexes_query.png)  
@@ -206,7 +207,7 @@
 В **environment** перечисляются **переменные среды**, к которым Spring Boot приложение имеет доступ.
 Мы их прописываем в файле **application-prod.yml**.
 
-Доступ из одного контейнера к другому происходит по имени сервиса. То есть к базе данных 
+**Доступ из одного контейнера к другому происходит по имени сервиса**. То есть к базе данных 
 мы обращаемся не по localhost, а по database:
 
     - 'SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/bank_prod'
@@ -255,6 +256,7 @@
 при следующем запуске приложения их не будет.
 
 # Использованные источники
+
 - [Spring Profiles](https://sysout.ru/spring-profiles/)
 - [Использование профилей Spring](https://doc.cuba-platform.com/manual-latest-ru/spring_profiles.html)
 - [Настройка CORS в Spring Security](https://sysout.ru/nastrojka-cors-v-spring-security/)
