@@ -123,7 +123,7 @@
                    dockerfile: Dockerfile
                container_name: 'bank_prod_db'
                ports:
-                   - 15433:5432 # для доступа с локальной машины
+                   - 15433:5432 # для доступа с хост-машины
                environment:
                    - 'POSTGRES_DB=bank_prod'
                    - 'POSTGRES_USER=admin_prod'
@@ -176,15 +176,15 @@
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/23_dockerfile_for_db.png)  
 т.е. просто берётся готовый образ **postgres:13**.
 
-Порты можно было и не выставлять, ведь к базе будем подключаться не мы с localhost,
-а Spring Boot из соседнего контейнера. А запись выше именно для доступа с локальной машины:
+Порты можно было и не выставлять, ведь к базе будем подключаться не мы с хост-машины,
+а Spring Boot из соседнего контейнера. А проброс портов нужен именно для доступа с хост-машины:
 
     ports:
-        - 15433:5432 # для доступа с локальной машины
+        - 15433:5432 # для доступа с хост-машины
 
 9. **Сервис backend** (Spring Boot REST API на встроенном Tomcat-сервере).  
 
-Директива ports объявляет «проброс» портов:
+Директива ports объявляет проброс портов:
 
     ports:
         - 8083:8083
@@ -230,18 +230,29 @@
 сервера Nginx **/usr/share/nginx/html** файлы из папки **html**, которая лежит рядом с докер-файлом
 и содержит html и js-файлы.
 
-11. Есть виртуальная машина, на которой установлены только **Docker** и утилита **docker-compose**.
-Скопировать на эту машину всю папку **prod**.
+11. Есть машина, на которой установлены **Docker** и утилита **docker-compose**.
+Копируем на эту машину всю папку **prod** и открываем её в терминале. Далее выполняем
+команду `docker-compose up --build` и видим, что скачиваются нужные образы и создаются контейнеры.
 
-Далее выполнить команду `docker-compose up --build`
+Далее в терминале видим, что Spring Boot приложение запущено:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/26_app_start_in_container.png)  
 
-Теперь в браузере по адресу `http://localhost:8080/` будет доступно наше приложение. А по 
-адресу `http://localhost:8083/swagger-ui/index.html` можно будет открыть **API-документацию**.
+В итоге в терминале можно увидеть все образы, контейнеры и тома:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/27_image_container_volume.png)  
 
-Чтобы остановить и удалить контейнеры, выполнить команду `docker-compose down`
+Можно подключиться к БД с хост-машины:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/28_connect_to_db_in_prod.png)  
 
-Если нужно удалить и volume с данными, выполнить команду `docker-compose down --volume`. При этом если были
-созданы новые карты в приложении, то после этой команды при следующем запуске приложения их не будет.
+Далее проверим, что наше приложение доступно в браузере по адресу `http://localhost:8080/`, а по 
+адресу `http://localhost:8083/swagger-ui/index.html` открывается **API-документация**.
+
+Чтобы остановить и удалить контейнеры, нужно выполнить команду `docker-compose down`. В результате видим:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/29_delete_containers.png)    
+
+Если нужно удалить и **том (volume) с данными**, выполнить команду `docker-compose down --volume`:   
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/30_delete_volume.png)  
+при этом если были созданы новые карты в приложении, то после этой команды 
+при следующем запуске приложения их не будет.
 
 # Использованные источники
 - [Spring Profiles](https://sysout.ru/spring-profiles/)

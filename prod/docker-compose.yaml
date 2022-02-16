@@ -9,7 +9,7 @@ services:
             dockerfile: Dockerfile
         container_name: 'bank_prod_db'
         ports:
-            - 15433:5432 # для доступа с локальной машины
+            - 15433:5432 # для доступа с хост-машины
         environment:
             - 'POSTGRES_DB=bank_prod'
             - 'POSTGRES_USER=admin_prod'
