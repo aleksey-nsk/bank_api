@@ -39,5 +39,5 @@ build/
 # Logs
 /logs
 
-
-.attach*
+# Other
+/.attach_*

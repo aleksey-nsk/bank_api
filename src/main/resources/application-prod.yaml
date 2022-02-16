@@ -1,0 +1,26 @@
+# На каком порту стартует приложение
+server:
+    port: 8083
+
+# Настройки логирования
+logging:
+    level:
+        com.example.bank_api: debug
+    file:
+        name: logs/app.log
+
+# Настройки БД
+spring:
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://database:5432/bank_prod
+        username: admin_prod
+        password: 987
+    jpa:
+        show-sql: false
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+    liquibase:
+        enabled: true
+        change-log: classpath:db/changelog/db.changelog-master.yaml
