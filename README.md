@@ -79,7 +79,7 @@
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/15_use_explain.png)  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/16_use_explain.png)  
 
-# Как поднять приложение в Docker-контейнере
+# Как поднять приложение в Docker-контейнерах
 
 1. Данное приложение состоит из 3 компонентов, которые зависят друг от друга, но могут быть 
 запущены изолированно на разных машинах. Поэтому надо поднять 3 контейнера:
