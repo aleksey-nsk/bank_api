@@ -64,7 +64,7 @@
 
 8. **Индекс** — объект базы данных, создаваемый с целью повышения производительности поиска данных.
 Рекомендация: _"в БД на все foreign key и все поля поиска нужно добавить индексы для ускорения чтения"_.
-Добавляем миграцию, создающую индексы (src/main/resources/db/changelog/**04_create_indexes.xml**).  
+Добавляем **миграцию**, создающую индексы (src/main/resources/db/changelog/**04_create_indexes.xml**).  
 
 Затем выводим список индексов запросом:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/13_select_indexes_query.png)  
