@@ -255,8 +255,7 @@
 при этом если были созданы новые карты в приложении, то после этой команды 
 при следующем запуске приложения их не будет.
 
-# Использованные источники
-
+12. **Использованные источники**:
 - [Spring Profiles](https://sysout.ru/spring-profiles/)
 - [Использование профилей Spring](https://doc.cuba-platform.com/manual-latest-ru/spring_profiles.html)
 - [Настройка CORS в Spring Security](https://sysout.ru/nastrojka-cors-v-spring-security/)
