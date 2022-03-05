@@ -262,3 +262,4 @@
 - [Spring на практике: 2 способа настроить CORS в Spring Boot](https://www.youtube.com/watch?v=XVfss_ttn_c)
 - [Разработка под Docker. Локальное окружение](https://habr.com/ru/post/459972/)
 - [Spring Boot + PostgreSQL + JS в Doсker](https://sysout.ru/spring-boot-postgresql-js-v-dosker/)
+
