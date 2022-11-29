@@ -247,10 +247,13 @@
 Далее проверим, что наше приложение доступно в браузере по адресу `http://localhost:8080/`, а по 
 адресу `http://localhost:8083/swagger-ui/index.html` открывается **API-документация**.
 
-Чтобы **остановить и удалить контейнеры**, нужно выполнить команду `docker-compose down`. В результате видим:  
+Чтобы **остановить и удалить контейнеры**, нужно выполнить команду  
+`docker-compose down`  
+В результате видим:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/29_delete_containers.png)    
 
-Если нужно **удалить контейнеры и том (volume) с данными**, выполнить команду `docker-compose down --volume`:   
+Если нужно **удалить контейнеры и том (volume) с данными**, выполнить команду  
+`docker-compose down --volume`     
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/30_delete_volume.png)  
 при этом если были созданы новые карты в приложении, то после этой команды 
 при следующем запуске приложения их не будет.  
