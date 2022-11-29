@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-
     db:
         image: 'postgres:13'
         container_name: 'bank_api_db'
@@ -11,3 +10,8 @@ services:
             - 'POSTGRES_DB=bank'
             - 'POSTGRES_USER=admin'
             - 'POSTGRES_PASSWORD=123456'
+        volumes:
+            - db-data:/var/lib/postgresql/data
+
+volumes:
+    db-data:

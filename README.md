@@ -19,7 +19,7 @@
 Далее над всеми тестовыми классами пишем аннотацию **@ActiveProfiles("test")** для
 активации тестового профиля.  
 
-Тесты (**unit** и **интеграционные**) создаём в директории **src/test**:  
+Тесты (**unit** и **интеграционные**) создаём в директории **src/test/java**:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/05_test_structure.png)    
 
 4. Документацию к API генерируем с помощью **Swagger**. Для этого подключаем зависимости в pom-файле:  
@@ -253,7 +253,10 @@
 Если нужно удалить и **том (volume) с данными**, выполнить команду `docker-compose down --volume`:   
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/30_delete_volume.png)  
 при этом если были созданы новые карты в приложении, то после этой команды 
-при следующем запуске приложения их не будет.
+при следующем запуске приложения их не будет.  
+
+Если нужно удалить **контейнеры, тома и образы**, выполнить команду  
+`docker-compose down --rmi all --volume`  
 
 12. **Использованные источники**:
 - [Spring Profiles](https://sysout.ru/spring-profiles/)
