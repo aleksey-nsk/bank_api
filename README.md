@@ -5,8 +5,8 @@
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/01_task.png)  
 Подробное условие задачи в файле files/**task.pdf**.
 
-2. Использована БД **Postgres** в контейнере **Docker**. Настройки контейнера 
-указываем в файле **docker-compose.yaml**:  
+2. Использована БД **Postgres** в контейнере **Docker**. Настройки контейнера указываем  
+в файле **docker-compose.yaml**:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/02_docker_compose.png)  
 
 Настройки подключения к БД прописываем в файле src/main/resources/**application-dev.yaml**:  
@@ -25,7 +25,8 @@
 4. Документацию к API генерируем с помощью **Swagger**. Для этого подключаем зависимости в pom-файле:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/06_swagger_dependency.png)  
 
-Далее создаём конфигурационный файл src/main/java/com/example/bank_api/config/**SpringFoxConfig.java**:  
+Далее создаём конфигурационный файл  
+src/main/java/com/example/bank_api/config/**SpringFoxConfig.java**:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/07_spring_fox_config.png)  
 
 Для документирования используем аннотацию **@Api** над классами контроллеров, 
@@ -103,9 +104,8 @@
 4. В корне проекта создать папку **prod** с такой структурой:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/21_prod_structure.png)  
 
-5. Файлы для фронтэнда **index.html** и **index.js** скопировать в 
-директорию **prod/services/frontend/html**, и при этом поменять `contextPath`
-в js-файле:  
+5. Файлы для фронтэнда **index.html** и **index.js** скопировать в директорию  
+**prod/services/frontend/html**, и при этом поменять `contextPath` в js-файле:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/22_1_index_js_context_path.png)  
 
 6. Выполнить команду `mvn clean package` и далее созданный jar-файл скопировать из папки **target**
@@ -123,13 +123,13 @@
 В файле **docker-compose.yaml**, **volumes** может появляться в двух разных местах:
 
     services:
-       database:
-       # ...
-       volumes:  # вложенный ключ. Настраивает тома для определённой службы
-          # ...
+        database:
+            # ...
+            volumes:  # вложенный ключ. Настраивает тома для определённой службы
+                # ...
     
     volumes:  # ключ верхнего уровня. Объявляет тома, на которые можно ссылаться из нескольких сервисов
-       # ...    
+        # ...    
     
 Содержимое Dockerfile для сервиса database:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/23_dockerfile_for_db.png)  
@@ -190,10 +190,8 @@ html и js-файлы.
 
 11. Есть машина, на которой установлены **Docker** и утилита **docker-compose**.
 Копируем на эту машину всю папку **prod** и открываем её в терминале. Далее выполняем
-команду  
-**docker-compose up --build**  
-и видим, что происходит развёртывание программы. Сначала билдятся сами образы, потом
-от них запускаются контейнера.
+команду `docker-compose up --build` и видим, что происходит развёртывание программы.
+Сначала билдятся сами образы, потом от них запускаются контейнера.
 - `docker-compose up` - команда на запуск файла docker-compose.yaml
 - `--build` - при каждом запуске билдить образы заново, и далее запускать от них контейнеры
 - `docker-compose -f test.yaml up --build -d` - полная команда выглядит так
@@ -207,8 +205,7 @@ html и js-файлы.
 Можно подключиться к БД с хост-машины:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/28_connect_to_db_in_prod.png)  
 
-Далее проверим, что наше приложение доступно в браузере по адресу  
-**http://localhost:8080/**  
+Далее проверим, что наше приложение доступно в браузере по адресу **http://localhost:8080/**  
 а по адресу **http://localhost:8083/swagger-ui/index.html** открывается **API-документация**.
 
 Чтобы **остановить и удалить контейнеры**, нужно выполнить команду  
@@ -219,11 +216,12 @@ html и js-файлы.
 Если нужно **удалить контейнеры и том (volume) с данными**, выполнить команду  
 `docker-compose down --volume`     
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/30_delete_volume.png)  
-при этом если были созданы новые карты в приложении, то после этой команды 
-при следующем запуске приложения их не будет.  
+**при этом если были созданы новые карты в приложении, то после этой команды 
+при следующем запуске приложения их не будет**.  
 
 Если нужно **удалить контейнеры, тома и образы**, выполнить команду  
 `docker-compose down --rmi all --volume`  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/31_delete_all.png)  
 
 12. **Использованные источники**:
 - [Spring Profiles](https://sysout.ru/spring-profiles/)
