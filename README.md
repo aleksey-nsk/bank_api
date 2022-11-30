@@ -89,7 +89,7 @@
        AngularJS-фронтэнд на сервере Nginx
 
 2. Сначала надо создать три профиля (**dev**, **test**, **prod**) и 
-файл **application.yaml**, в котором будем задавать активный профиль:  
+файл **application.yaml**, в котором будем задавать активный профиль. Указать профиль prod:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/17_18_three_profiles_and_active.png)  
 
 Профили dev и test к этому моменту уже были. Поэтому создал профиль prod, в котором порт и 
@@ -106,91 +106,51 @@
 5. Файлы для фронтэнда **index.html** и **index.js** скопировать в 
 директорию **prod/services/frontend/html**, и при этом поменять `contextPath`
 в js-файле:  
-![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/22_index_js_context_path.png)  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/22_1_index_js_context_path.png)  
 
 6. Выполнить команду `mvn clean package` и далее созданный jar-файл скопировать из папки **target**
 в папку **prod/services/backend**.
 
-7. Файл prod/**docker-compose.yaml** имеет вид:
-
-       version: '3.0'
-       
-       services:
-       
-           # База данных PostgreSQL
-           database:
-               build:
-                   context: services/database
-                   dockerfile: Dockerfile
-               container_name: 'bank_prod_db'
-               ports:
-                   - 15433:5432 # для доступа с хост-машины
-               environment:
-                   - 'POSTGRES_DB=bank_prod'
-                   - 'POSTGRES_USER=admin_prod'
-                   - 'POSTGRES_PASSWORD=987'
-               volumes:
-                   - db-data:/var/lib/postgresql/data
-       
-           # Бекэнд (Spring Boot REST API на встроенном Tomcat-сервере)
-           backend:
-               build:
-                   context: services/backend
-                   dockerfile: Dockerfile
-               command: java -jar ./back.jar
-               environment:
-                   - 'PORT=8083'
-                   - 'SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/bank_prod'
-                   - 'JS_URL=http://localhost:8080'
-               image: 'image_back'
-               container_name: 'bank_prod_back'
-               ports:
-                   - 8083:8083
-               depends_on:
-                   - database
-       
-           # Фронтэнд на JavaScript на Nginx-сервере
-           frontend:
-               build:
-                   context: services/frontend
-                   dockerfile: Dockerfile
-               image: 'image_front'
-               container_name: 'bank_prod_front'
-               ports:
-                   - 8080:80
-       
-       # Создать volume с именем db-data
-       volumes:
-           db-data:
+7. Файл prod/**docker-compose.yaml** имеет вид:  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/22_2_docker_compose.png)  
+![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/22_3_docker_compose.png)  
 
 Для каждого сервиса указан свой **Dockerfile (файл для сборки образа)**.
 
 8. **Сервис database** (база данных PostgreSQL).  
 
-Создаётся volume с именем db-data отдельной командой в конце файла:
+Создаётся том (volume) с именем **pgdata**.  
+В файле **docker-compose.yaml**, **volumes** может появляться в двух разных местах:
 
-    # Создать volume с именем db-data  
-    volumes:
-        db-data:
+    services:
+       database:
+       # ...
+       volumes:  # вложенный ключ. Настраивает тома для определённой службы
+          # ...
+    
+    volumes:  # ключ верхнего уровня. Объявляет тома, на которые можно ссылаться из нескольких сервисов
+       # ...    
     
 Содержимое Dockerfile для сервиса database:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/23_dockerfile_for_db.png)  
 т.е. просто берётся готовый образ **postgres:13**.
 
-Порты можно было и не выставлять, ведь к базе будем подключаться не мы с хост-машины,
-а Spring Boot из соседнего контейнера. А проброс портов нужен именно для доступа с хост-машины:
+Порты можно было и не выставлять, ведь к базе будем подключаться не мы с хост-машины,  
+а Spring Boot из соседнего контейнера. А **проброс портов** нужен именно для доступа с хост-машины:
 
+    # Проброс портов (для доступа с хост-машины)
     ports:
-        - 15433:5432 # для доступа с хост-машины
+        - 15433:5432
 
 9. **Сервис backend** (Spring Boot REST API на встроенном Tomcat-сервере).  
 
-Директива ports объявляет проброс портов:
+Директива ports объявляет **проброс портов**:
 
     ports:
         - 8083:8083
 
-т.е. порту 8083 контейнера соответствует порт 8083 хост-машины. На указанном порту будет запущен http-сервер. 
+т.е. порту 8083 контейнера соответствует порт 8083 хост-машины. На указанном порту  
+будет запущен сервер. 
 
 Указывается зависимость:
 
@@ -200,11 +160,7 @@
 т.е. данный сервис зависит от сервиса database. Это означает, что сначала запускается сервис database,
 а потом сервис backend.
 
-Задаётся имя образа:
-
-    image: 'image_back'
-          
-В **environment** перечисляются **переменные среды**, к которым Spring Boot приложение имеет доступ.
+В **environment** перечисляются **переменные окружения (переменные среды)**, к которым Spring Boot приложение имеет доступ.
 Мы их прописываем в файле **application-prod.yml**.
 
 **Доступ из одного контейнера к другому происходит по имени сервиса**. То есть к базе данных 
@@ -217,7 +173,7 @@
 Содержимое Dockerfile для сервиса backend:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/24_dockerfile_for_back.png)  
 
-тут мы собираем образ на основе готового образа **java:8-jre**. Затем задаём рабочую папку
+тут мы собираем образ на основе готового образа **openjdk:8-jre**. Затем задаём рабочую папку
 и копируем в неё наше приложение **bank_api-0.0.1-SNAPSHOT.jar** под именем **back.jar**.
 А потом запускаем приложение с помощью команды `java -jar ./back.jar`
 
@@ -228,24 +184,32 @@
 Докер-файл у данного сервиса такой:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/25_dockerfile_for_front.png)  
 т.е. мы собираем образ на основе готового образа **nginx**. Затем копируем в папку 
-сервера Nginx **/usr/share/nginx/html** файлы из папки **html**, которая лежит рядом с докер-файлом
-и содержит html и js-файлы.
+сервера Nginx **/usr/share/nginx/html** файлы из папки **html**, которая лежит рядом
+с докер-файлом и содержит  
+html и js-файлы.
 
 11. Есть машина, на которой установлены **Docker** и утилита **docker-compose**.
 Копируем на эту машину всю папку **prod** и открываем её в терминале. Далее выполняем
-команду `docker-compose up --build` и видим, что скачиваются нужные образы и создаются контейнеры.
+команду  
+**docker-compose up --build**  
+и видим, что происходит развёртывание программы. Сначала билдятся сами образы, потом
+от них запускаются контейнера.
+- `docker-compose up` - команда на запуск файла docker-compose.yaml
+- `--build` - при каждом запуске билдить образы заново, и далее запускать от них контейнеры
+- `docker-compose -f test.yaml up --build -d` - полная команда выглядит так
 
-Далее в терминале видим, что Spring Boot приложение запущено:  
+В итоге в терминале видим, что Spring Boot приложение запущено:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/26_app_start_in_container.png)  
 
-В итоге в терминале можно увидеть все образы, контейнеры и тома:  
+Можно посмотреть все образы, контейнеры и тома:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/27_image_container_volume.png)  
 
 Можно подключиться к БД с хост-машины:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/28_connect_to_db_in_prod.png)  
 
-Далее проверим, что наше приложение доступно в браузере по адресу `http://localhost:8080/`, а по 
-адресу `http://localhost:8083/swagger-ui/index.html` открывается **API-документация**.
+Далее проверим, что наше приложение доступно в браузере по адресу  
+**http://localhost:8080/**  
+а по адресу **http://localhost:8083/swagger-ui/index.html** открывается **API-документация**.
 
 Чтобы **остановить и удалить контейнеры**, нужно выполнить команду  
 `docker-compose down`  
