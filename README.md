@@ -22,7 +22,8 @@
 Тесты (**unit** и **интеграционные**) создаём в директории **src/test/java**:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/05_test_structure.png)    
 
-4. Документацию к API генерируем с помощью **Swagger**. Для этого подключаем зависимости в pom-файле:  
+4. Документацию к API генерируем с помощью **Swagger**. Для этого подключаем зависимости  
+в pom-файле:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/06_swagger_dependency.png)  
 
 Далее создаём конфигурационный файл  
