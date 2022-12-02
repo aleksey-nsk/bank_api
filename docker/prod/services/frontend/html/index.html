@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <meta charset="utf-8">
+    <title>Онлайн Банк</title>
+    <link type="image/x-icon" href="/favicon.ico" rel="shortcut icon">
+
+    <!-- Подключить Bootstrap, jQuery, AngularJS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+
+    <!-- Скрипт с логикой -->
+    <script src="index.js"></script>
+</head>
+<body>
+<div class="container" ng-controller="indexController">
+
+    <div class="row">
+        <h1 class="col-md-6">Профиль клиента</h1>
+        <span style="color: blue">ФИО: {{Client.lastname}} {{Client.firstname}} {{Client.middlename}}</span>
+    </div>
+
+    <div>
+        <br/>
+        <h3>Список счетов</h3>
+        <table class="table table-hover" cellpadding="0" cellspacing="0">
+            <thead>
+            <tr>
+                <td>Номер счёта</td>
+                <td>Дата открытия</td>
+                <td>Баланс (руб.)</td>
+                <td>Количество привязанных карт</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="account in Accounts">
+                <td>{{account.number}}</td>
+                <td>{{account.openingDate | date:'d MMM yyyy'}}</td>
+                <td>{{account.balance}}</td>
+                <td>{{account.cards.length}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <br/>
+        <h3>Список карт</h3>
+        <table class="table table-hover" cellpadding="0" cellspacing="0">
+            <thead>
+            <tr>
+                <td>Номер карты</td>
+                <td>Дата выпуска</td>
+                <td>Номер счёта</td>
+                <td>Сумма для зачисления</td>
+            </tr>
+            </thead>
+            <tbody ng-repeat="account in Accounts">
+            <tr ng-repeat="card in account.cards">
+                <td>{{card.cardNumber}}</td>
+                <td>{{card.releaseDate | date:'d MMM yyyy'}}</td>
+                <td>{{account.number}}</td>
+                <td>
+                    <input class="form-control" type="number" ng-model="add">
+                </td>
+                <td>
+                    <button class="btn btn-primary" ng-click="addBalance(Client.id, card.cardNumber, add)">
+                        Зачислить
+                    </button>
+                </td>
+                <td>
+                    <button class="btn-danger" ng-click="deleteCard(Client.id, card.id)">Удалить карту</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <br/>
+        <h3>Выпустить новую карту</h3>
+        <form novalidate ng-submit="saveCard(Client.id)">
+            <div class="form-group col-md-6">
+                <label for="accountSelect">Счёт</label>
+                <select class="form-control" id="accountSelect" ng-model="accountNumberSelected">
+                    <option ng-repeat="account in Accounts" value="{{account.number}}">{{account.number}}</option>
+                </select>
+            </div>
+            <div>
+                <button class="btn btn-success" type="submit">Создать</button>
+            </div>
+        </form>
+        <br/>
+    </div>
+
+</div>
+</body>
+</html>

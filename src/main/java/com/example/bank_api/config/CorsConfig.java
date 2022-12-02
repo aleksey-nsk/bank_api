@@ -13,7 +13,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // обращаться к нашему приложению можно по любому внутреннему url
-                .allowedOrigins("http://localhost:8080") // только сайт http://localhost:8080 может делать запросы
+                .allowedOrigins("http://localhost") // только сайт http://localhost может делать запросы
                 .allowedMethods("*"); // запросы можно делать абсолютно всеми методами (GET, POST, PUT и т.д.)
     }
 }

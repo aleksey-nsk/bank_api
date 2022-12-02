@@ -1,0 +1,59 @@
+version: '3.0'
+
+services:
+
+    # База данных PostgreSQL
+    database:
+
+        # Ключевое слово 'build' позволяет задать путь к файлу Dockerfile, который
+        # нужно использовать для создания образа, который позволит запустить сервис
+        build:
+            context: services/database
+            dockerfile: Dockerfile
+
+        # Указываем название образа, который получится в процессе билда
+        image: 'image_db'
+
+        # Имя контейнера, который будет стартовать от образа
+        container_name: 'bank_prod_db'
+
+        # Рестартовать контейнер если вдруг упадёт
+        # restart: always
+
+        # Задать переменные окружения
+        environment:
+            - 'POSTGRES_DB=bank_prod'
+            - 'POSTGRES_USER=admin_prod'
+            - 'POSTGRES_PASSWORD=987'
+
+        # Создать том.
+        # Здесь 'volumes' - вложенный ключ. Настраивает тома для определённой службы
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+
+        network_mode: host
+
+    # Бекэнд (Spring Boot REST API на встроенном Tomcat-сервере)
+    backend:
+        build:
+            context: services/backend
+            dockerfile: Dockerfile
+        image: 'image_back'
+        container_name: 'bank_prod_back'
+        depends_on:
+            - database  # контроль порядка запуска контейнеров
+        network_mode: host
+
+    # Фронтэнд на JavaScript на Nginx-сервере
+    frontend:
+        build:
+            context: services/frontend
+            dockerfile: Dockerfile
+        image: 'image_front'
+        container_name: 'bank_prod_front'
+        network_mode: host
+
+# Здесь 'volumes' - ключ верхнего уровня. Объявляет тома, на которые
+# можно ссылаться из нескольких сервисов
+volumes:
+    pgdata:
