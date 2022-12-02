@@ -143,7 +143,7 @@ src/main/java/com/example/bank_api/config/**SpringFoxConfig.java**:
 Указывается зависимость:
 
     depends_on:
-        - database
+        - database  # контроль порядка запуска контейнеров
     
 т.е. данный сервис зависит от сервиса database. Это означает, что сначала запускается сервис database,
 а потом сервис backend.
