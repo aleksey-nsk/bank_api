@@ -6,7 +6,7 @@
 Подробное условие задачи в файле files/**task.pdf**.
 
 2. Использована БД **Postgres** в контейнере **Docker**. Настройки контейнера указываем  
-в файле **docker-compose.yaml**:  
+в файле docker/dev/**docker-compose.yaml**:  
 ![](https://github.com/aleksey-nsk/bank_api/blob/master/screenshots/02_docker_compose.png)  
 
 Настройки подключения к БД прописываем в файле src/main/resources/**application-dev.yaml**:  
